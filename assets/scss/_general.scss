@@ -1,0 +1,50 @@
+html,
+body{
+  height: 100%;
+  min-width: 900px;
+}
+
+#__nuxt {
+  height: 100%;
+}
+*{
+  box-sizing: border-box;
+}
+.site {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px;
+
+}
+.disabled_class {
+  opacity: 0.5;
+}
+.no-scroll{
+  overflow: hidden;
+}
+.page {
+  flex: 1 1 auto;
+  padding: 20px 0;
+}
+.flex{
+  display: flex;
+}
+.flex-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.center{
+  text-align: center;
+}
