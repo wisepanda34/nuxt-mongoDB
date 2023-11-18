@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     dbUrl: process.env.DATABASE_URL,
   },
-  modules: ['@pinia/nuxt', "@nuxt/image"],
+  modules: ['@pinia/nuxt', "@nuxt/image","@nuxtjs/tailwindcss"],
   css: [
     '~/assets/scss/_reset.scss',
     '~/assets/scss/_general.scss',

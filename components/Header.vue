@@ -5,7 +5,7 @@
 <template>
   <div class="header flex">
     <div class="header__logo flex-center">
-      <img src="@/public/logo.svg" alt="logo" />
+      <img src="../logo.svg" alt="logo" />
 <!--      <NuxtImg src="@/public/logo.svg" alt="logo" />-->
 
     </div>

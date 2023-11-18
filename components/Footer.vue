@@ -16,6 +16,7 @@
   padding: 20px;
   font-size: 20px;
   color: #59b684;
+  border-radius: 10px;
 
 }
 </style>
