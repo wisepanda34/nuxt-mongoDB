@@ -1,5 +1,7 @@
 <script setup>
 import convertDate from "~/utils/convertDate.js";
+import Button from "~/components/UI/Button.vue";
+const buttonText = ref("Add friend")
 const { data: birthdays, error } = await useFetch("/api/birthdays")
 let openInfo = null
 const toggleInfo = (index) => {
@@ -11,7 +13,7 @@ const toggleInfo = (index) => {
 <template>
   <div class="birthday">
     <h1 class="text-center text-fz24 text-fw700">Upcoming birthdays</h1>
-    <button class="btn" @click="openForm">Add friend</button>
+    <Button :text="buttonText"/>
     <ul>
       <li
           class="birthday__item"
