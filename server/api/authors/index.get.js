@@ -2,9 +2,7 @@ import AuthorModel from "~/server/models/Author.js";
 
 export default defineEventHandler( async () => {
     try {
-        const result = await AuthorModel.find()
-        console.log("result>", result)
-        return result
+        return await AuthorModel.find()
     }catch (error) {
         console.log(error)
     }

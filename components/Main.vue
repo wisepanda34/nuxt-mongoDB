@@ -4,10 +4,8 @@
 
 <template>
   <div class="main">
-    <h1 class="text-center mb-4 font-semibold text-2xl text-gray-500">WELCOME TO PANDA & CO</h1>
-    <div class="main__image">
-      <img class="" src="@/public/images/panda1.jpg" alt="panda">
-    </div>
+   <Birthday/>
+<!--    <Weather/>-->
   </div>
 </template>
 

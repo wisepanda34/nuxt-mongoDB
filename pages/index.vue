@@ -1,6 +1,4 @@
 <script setup>
-import News from "~/components/News.vue";
-import Main from "~/components/Main.vue";
 
 const { data: posts, error } = await useFetch("/api/posts")
 
