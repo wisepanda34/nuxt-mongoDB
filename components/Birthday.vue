@@ -1,28 +1,28 @@
 <template>
-  <div class="birthday">
+  <div class="friends">
     <Button :text="buttonText" type="button" @click="toggleOpenForm"/>
-    <div v-if="openFormAddFriend===false" class="birthday__info">
-      <h1 class="birthday__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
+    <div v-if="openFormAddFriend===false" class="friends__info">
+      <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
       <ul>
         <li
-            class="birthday__item"
-            v-for="(item, index) in birthdays"
-            :key="item._id"
+            class="friends__item"
+            v-for="(friend, index) in friends"
+            :key="friend._id"
             @click="toggleInfo(index)"
         >
 
-          <div class="birthday__item-header">
-            <div class="birthday__name">
-              <p>{{item.name}} {{item.surname}}</p>
+          <div class="friends__item-header">
+            <div class="friends__name">
+              <p>{{friend.name}} {{friend.surname}}</p>
             </div>
-            <div class="birthday__date">
-              <p>{{convertDate(item.birthday)}}</p>
+            <div class="friends__date">
+              <p>{{convertDate(friend.birthday)}}</p>
             </div>
           </div>
 
           <transition-fade>
             <div v-if="openInfo===index" class="box">
-              <p>{{ item.info }}</p>
+              <p>{{ friend.info }}</p>
             </div>
           </transition-fade>
 
@@ -30,16 +30,16 @@
       </ul>
     </div>
 
-    <div v-if="openFormAddFriend===true" class="birthday__new">
-      <h1 class="birthday__title text-center text-fz24 text-fw700">Adding info about friend</h1>
-      <form class="birthday__form">
+    <div v-if="openFormAddFriend===true" class="friends__new">
+      <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about friend</h1>
+      <form class="friends__form">
         <Input
             id="idName"
             textLabel="Name"
             type="text"
             placeholder=""
             v-model.trim="name"
-            class="birthday__input"
+            class="friends__input"
         />
         <Input
             id="idSurname"
@@ -47,13 +47,27 @@
             type="text"
             placeholder=""
             v-model.trim="surname"
-            class="birthday__input"
+            class="friends__input"
         />
-
+        <DateInput
+            id="idDateOfBirth"
+            textLabel="Date of birth"
+            type="text"
+            placeholder="Please enter a date in the format DD/MM/YYYY"
+            v-model.trim="dateOfBirth"
+            class="friends__input"
+        />
+        <TextAria
+            id="idInfo"
+            textLabel="Info"
+            placeholder=""
+            v-model.trim="info"
+            class="friends__input"
+        />
         <Button
             text="Save friend"
             type="submit"
-            class="birthday__btn"
+            class="friends__btn"
             @click.prevent="onSubmitFriend"
         />
       </form>
@@ -66,10 +80,12 @@
 import convertDate from "~/utils/convertDate.js";
 import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
+import DateInput from "~/components/UI/DateInput.vue";
+import TextAria from "~/components/UI/TextAria.vue";
 
 
 const buttonText = ref("Add friend")
-const { data: birthdays, error } = await useFetch("/api/birthdays")
+const { data: friends, error } = await useFetch("/api/birthdays")
 let openInfo = ref(null)
 const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
@@ -82,13 +98,19 @@ const toggleOpenForm = ()=>{
 }
 const name = ref('')
 const surname = ref('')
+const dateOfBirth = ref('')
+const info = ref('')
 const onSubmitFriend = () =>{
   console.log("Name:", name.value);
+  console.log("Surname:", surname.value);
+  console.log("Date:", dateOfBirth.value);
+  console.log("Info:", info.value);
+
 }
 </script>
 
 <style scoped lang="scss">
-.birthday{
+.friends{
   &__item{
     padding: 10px;
     margin: 10px 0;
@@ -102,9 +124,6 @@ const onSubmitFriend = () =>{
   }
   &__title{
     margin: 20px 0;
-  }
-  &__input{
-
   }
   &__btn{
     margin-top: 30px;
