@@ -1,13 +1,11 @@
 <script setup>
-  const { text } = defineProps(['text']);
-  console.log(typeof text)
-  console.log(text)
+  const { text, type } = defineProps(['text', 'type']);
 </script>
 
 <template>
   <button
       class="btn flex-center"
-      type="button"
+      :type="type"
   >
     <span>{{text}}</span>
   </button>
