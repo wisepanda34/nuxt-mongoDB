@@ -18,9 +18,11 @@
   },
   "dependencies": {
     "@morev/vue-transitions": "^2.3.6",
+    "@nuxt/http": "^0.6.4",
     "@pinia/nuxt": "^0.5.1",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.29.4",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
     "multer": "^1.4.5-lts.1",

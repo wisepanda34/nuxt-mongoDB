@@ -21,18 +21,18 @@
 </template>
 
 <script setup>
+import moment from 'moment';
 
 const { id, textLabel, type, placeholder, modelValue } = defineProps(['id', 'textLabel', 'type', 'placeholder', 'modelValue']);
 const emits = defineEmits(['update:modelValue']);
-
 const updateModelValue = (event) => {
   const inputValue = event.target.value;
-  if (/^\d{2}\.\d{2}\.\d{4}$/.test(inputValue)) {
+  const isValidDate = moment(inputValue, 'DD/MM/YYYY', true).isValid();
+
+  if (isValidDate) {
     emits('update:modelValue', inputValue);
-    console.log(inputValue)
-  }
-  else{
-    console.log("wrong formate of date")
+  } else {
+    console.log('неверный формат даты');
   }
 };
 

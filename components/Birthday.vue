@@ -31,7 +31,7 @@
     </div>
 
     <div v-if="openFormAddFriend===true" class="friends__new">
-      <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about friend</h1>
+      <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
       <form class="friends__form">
         <Input
             id="idName"
@@ -83,7 +83,6 @@ import Input from "~/components/UI/Input.vue";
 import DateInput from "~/components/UI/DateInput.vue";
 import TextAria from "~/components/UI/TextAria.vue";
 
-
 const buttonText = ref("Add friend")
 const { data: friends, error } = await useFetch("/api/birthdays")
 let openInfo = ref(null)
@@ -96,17 +95,37 @@ const toggleOpenForm = ()=>{
   openFormAddFriend.value = !openFormAddFriend.value;
   buttonText.value = openFormAddFriend.value === true ? "Close form" : "Add friend"
 }
-const name = ref('')
-const surname = ref('')
-const dateOfBirth = ref('')
-const info = ref('')
-const onSubmitFriend = () =>{
-  console.log("Name:", name.value);
-  console.log("Surname:", surname.value);
-  console.log("Date:", dateOfBirth.value);
-  console.log("Info:", info.value);
+const name = ref('Victor')
+const surname = ref('Gross')
+const dateOfBirth = ref('20/10/2020')
+const info = ref('new college')
+const onSubmitFriend = async () => {
+  const dataNewFriend = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name.value,
+      surname: surname.value,
+      birthday: dateOfBirth.value,
+      info: info.value,
+    })
+  }
+  try {
+    const response = await fetch('/api/create-friend', dataNewFriend);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);  // Вывод ответа от сервера (например, сообщение об успешном создании пользователя)
 
-}
+  } catch (error) {
+    console.error('Error:', error.message);
+    console.log('Error:', error.message);
+  }
+};
+
 </script>
 
 <style scoped lang="scss">
