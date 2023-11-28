@@ -1,6 +1,9 @@
 export default defineEventHandler( async () => {
     try {
-        const response =  await fetch('https://api.openweathermap.org/data/2.5/weather?q=London&appid=4fd94d0dd42303cf19a84a022c8d636e')
+        // London
+        // const response =  await fetch('https://api.openweathermap.org/data/2.5/weather?q=London&appid=4fd94d0dd42303cf19a84a022c8d636e')
+        // Hassocks
+        const response =  await fetch('https://api.openweathermap.org/data/2.5/weather?lat=50.9198&lon=-0.151891&appid=4fd94d0dd42303cf19a84a022c8d636e')
         if(!response.ok){
             throw new Error (`Status: ${ response.status }`)
         }

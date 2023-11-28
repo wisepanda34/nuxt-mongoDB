@@ -141,7 +141,7 @@ const toggleKnowYear=()=>{
   isKnownYear.value = !isKnownYear.value
 }
 const name = ref('Tommy')
-const surname = ref('Kruz')
+const surname = ref('Kruzer')
 const dayOfBirth = ref('17/09/1991')
 const dateOfBirth = ref();
 const formatToShort = (date) => {
