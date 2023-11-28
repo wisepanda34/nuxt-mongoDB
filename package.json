@@ -20,6 +20,7 @@
     "@morev/vue-transitions": "^2.3.6",
     "@nuxt/http": "^0.6.4",
     "@pinia/nuxt": "^0.5.1",
+    "@vuepic/vue-datepicker": "^7.2.2",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",

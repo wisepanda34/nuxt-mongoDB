@@ -46,6 +46,8 @@ const updateModelValue = (event) => {
   flex-direction: column;
   gap: 5px;
   margin: 15px 0;
+
+
   &__label{
 
   }
@@ -58,6 +60,10 @@ const updateModelValue = (event) => {
     padding: 8px;
     border-radius: 5px;
     background: white;
+    border: 1px solid #ddd;
+  }
+  &__field:hover{
+    border: 1px solid #aaaeb7;
   }
 }
 </style>

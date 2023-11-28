@@ -50,6 +50,10 @@ const updateModelValue = (event) => {
     padding: 8px;
     border-radius: 5px;
     background: white;
+    border: 1px solid #ddd;
+  }
+  &__field:hover{
+    border: 1px solid #aaaeb7;
   }
 }
 </style>

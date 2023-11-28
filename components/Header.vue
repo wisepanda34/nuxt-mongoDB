@@ -13,6 +13,7 @@
     <nav class="header__nav">
       <nuxt-link to="/">Home</nuxt-link>
       <nuxt-link to="/authors">Authors</nuxt-link>
+      <nuxt-link to="/weather">Weather</nuxt-link>
     </nav>
   </div>
 </template>

@@ -4,8 +4,7 @@
 
 <template>
   <div class="main">
-   <Birthday/>
-<!--    <Weather/>-->
+   <Friends/>
   </div>
 </template>
 
