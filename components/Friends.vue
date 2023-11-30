@@ -69,19 +69,21 @@
               />
             </template>
           </VueDatePicker>
-        <DateInput />
-          <VueDatePicker
-              v-model="selectedYear"
-              class="friends__picker"
-              vertical
-              year-picker
-          />
-          <div>
-            <label>
-              <input type="checkbox" @change="toggleKnowYear">
-              I know the birthday's year
-            </label>
-          </div>
+          <DateInput />
+          <YearInput />
+
+<!--          <VueDatePicker-->
+<!--              v-model="selectedYear"-->
+<!--              class="friends__picker"-->
+<!--              vertical-->
+<!--              year-picker-->
+<!--          />-->
+<!--          <div>-->
+<!--            <label>-->
+<!--              <input type="checkbox" @change="toggleKnowYear">-->
+<!--              I know the birthday's year-->
+<!--            </label>-->
+<!--          </div>-->
           <TextAria
               id="idInfo"
               textLabel="Info"
@@ -107,6 +109,7 @@ import formatToDate from "~/utils/formatToDate.js";
 import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import DateInput from "~/components/UI/DateInput.vue";
+import YearInput from "~/components/UI/YearInput.vue";
 import TextAria from "~/components/UI/TextAria.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'

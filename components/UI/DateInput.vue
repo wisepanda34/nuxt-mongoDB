@@ -7,7 +7,7 @@
           :value="date"
           placeholder="Choose date"
           readonly
-          @click="showCalendar"
+          @click="toggleShowCalendar"
       />
       <div v-if="isVisibleCalendar" class="date-input__calendar">
         <ul v-if="isMonth" class="date-input__month-list">
@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import moment from 'moment';
 const months = [
   { name: 'January', countDays: 31 },
   { name: 'February', countDays: 29 },
@@ -57,8 +56,9 @@ const selectedDay= ref('')
 const selectedDate = ref({ month: '', day: null, days: [] });
 const date = ref('')
 
-const showCalendar = () => {
-  isVisibleCalendar.value = true;
+
+const toggleShowCalendar = () => {
+  isVisibleCalendar.value = !isVisibleCalendar.value;
   isMonth.value = true
 };
 
@@ -80,8 +80,6 @@ const chooseDay = (day) => {
   isMonth.value = false;
   console.log(selectedDate.value)
 }
-
-
 </script>
 
 <style scoped lang="scss">
@@ -143,19 +141,6 @@ const chooseDay = (day) => {
       border-radius: 2px;
     }
   }
-
 }
 </style>
 
-// const { id, textLabel, type, placeholder, modelValue } = defineProps(['id', 'textLabel', 'type', 'placeholder', 'modelValue']);
-// const emits = defineEmits(['update:modelValue']);
-// const updateModelValue = (event) => {
-//   const inputValue = event.target.value;
-//   const isValidDate = moment(inputValue, 'DD/MM/YYYY', true).isValid();
-//
-//   if (isValidDate) {
-//     emits('update:modelValue', inputValue);
-//   } else {
-//     console.log('неверный формат даты');
-//   }
-// };
