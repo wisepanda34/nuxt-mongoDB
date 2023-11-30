@@ -33,7 +33,7 @@
 
     <div v-if="openFormAddFriend===true" class="friends__new">
       <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
-      <form class="friends__form">
+      <form class="friends__form" @submit.prevent="onSubmitFriend">
           <Input
               id="idName"
               textLabel="Name"
@@ -50,27 +50,32 @@
               v-model.trim="surname"
               class="friends__input"
           />
-          <DateInput
-              v-if="!isKnownYear"
-              id="idDayOfBirth"
-              textLabel="Date of birth"
-              type="text"
-              placeholder="Please enter a date in the format DD/MM/YYYY"
-              v-model.trim="dayOfBirth"
-              class="friends__input"
+          <p style="margin-bottom: 5px">Date of birth</p>
+          <VueDatePicker
+              v-model="selectedDate"
+              class="friends__picker"
+              vertical
+              :enable-time-picker="false"
+              :enable-year-picker="false"
+              disable-year-select
+              :six-weeks="mode"
+              required
+          >
+            <template v-slot="{ inputValue, inputEvents }">
+              <input
+                  v-bind="inputEvents"
+                  :value="formatDate(inputValue)"
+                  readonly
+              />
+            </template>
+          </VueDatePicker>
+        <DateInput />
+          <VueDatePicker
+              v-model="selectedYear"
+              class="friends__picker"
+              vertical
+              year-picker
           />
-          <div v-if="isKnownYear">
-            <p style="margin-bottom: 5px">Date of birth</p>
-            <VueDatePicker
-                id="idDateOfBirth"
-                textLabel="Date of birth"
-                v-model="dateOfBirth"
-                class="friends__picker"
-                vertical
-                :enable-time-picker="false"
-                :format="formatToShort"
-            />
-          </div>
           <div>
             <label>
               <input type="checkbox" @change="toggleKnowYear">
@@ -131,7 +136,7 @@ const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
 };
 
-let openFormAddFriend = ref(false)
+let openFormAddFriend = ref(true)
 const toggleOpenForm = ()=>{
   openFormAddFriend.value = !openFormAddFriend.value;
   buttonText.value = openFormAddFriend.value === true ? "Close form" : "Add friend"
@@ -142,8 +147,32 @@ const toggleKnowYear=()=>{
 }
 const name = ref('Tommy')
 const surname = ref('Kruzer')
-const dayOfBirth = ref('17/09/1991')
-const dateOfBirth = ref();
+
+
+
+const selectedDate = ref(new Date());
+
+const selectedMonth = ref(new Date().getMonth() + 1);
+const selectedYear = ref(new Date().getFullYear());
+
+const mode = ref(true);
+const formatDate = (date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Поскольку месяцы начинаются с 0
+  return `${day}/${month}`;
+};
+
+watch(selectedDate, (newDate) => {
+  console.log(newDate);
+});
+watch(selectedMonth, (newMonth) => {
+  console.log(newMonth);
+});
+watch(selectedYear, (newYear) => {
+  console.log(newYear);
+});
+
+
 const formatToShort = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
