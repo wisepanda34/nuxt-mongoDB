@@ -1,3 +1,4 @@
+<!-- YearInput.vue -->
 <template>
   <div class="year-input">
     <label for="year-input">Year</label>
@@ -5,16 +6,16 @@
         id="year-input"
         class="year-input__field"
         placeholder="Choose year if you know"
-        :value="selectedYear"
+        :value="modelValue"
         readonly
         @click="toggleShowCalendar"
     />
     <div v-if="isVisibleCalendar" class="year-input__calendar">
       <ul class="year-input__list">
         <li
-            v-for="(item, index) in period"
+            v-for="(item, index) in generateYears(period[0], period[1])"
             :key="index"
-            class="date-input__item"
+            class="year-input__item"
             @click="chooseYear(item)"
         >
           {{ item }}
@@ -25,21 +26,30 @@
 </template>
 
 <script setup>
-const period = [1970, 2025]
-const isVisibleCalendar = ref(false)
-const selectedYear = ref('')
+
+defineProps(['modelValue']);
+const emits = defineEmits(['update:modelValue']);
+
+const period = [1970, 2025];
+const isVisibleCalendar = ref(false);
 
 const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
 };
 
+const generateYears = (start, end) => {
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+};
+
 const chooseYear = (item) => {
-  selectedYear.value = item
+  emits('update:modelValue', item);
   isVisibleCalendar.value = false;
-}
-
-
+};
 </script>
+
+
+
+
 
 <style scoped lang="scss">
 .year-input{
@@ -64,9 +74,13 @@ const chooseYear = (item) => {
   }
   &__calendar{
     position: absolute;
-    top: -140px;
+    top: -130px;
     left: 4px;
+    width: 250px;
+    height: 150px;
     z-index: 5;
+
+    overflow-y: scroll;
 
     padding: 8px;
     border-radius: 4px;
@@ -83,6 +97,8 @@ const chooseYear = (item) => {
   &__item{
     cursor: pointer;
     padding: 5px;
+    display: flex;
+    justify-content: center;
     &:hover{
       background: #fdd5cf;
       border-radius: 2px;

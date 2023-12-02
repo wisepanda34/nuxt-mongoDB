@@ -10,7 +10,7 @@
 
 <style lang="scss" scoped>
 .main{
-  width: 100%;
+  max-width: 100%;
 
   background: #fcf1ef;
   padding: 20px;

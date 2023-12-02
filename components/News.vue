@@ -16,7 +16,7 @@ const { posts, error } = defineProps(['posts', 'error']);
 
 <style lang="scss" scoped >
 .news{
-  width: 220px;
+  width: 100%;
   background: #d1f8fd;
 
   padding: 10px;

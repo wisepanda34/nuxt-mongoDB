@@ -13,15 +13,24 @@ const { data: posts, error } = await useFetch("/api/posts")
 
 <style lang="scss" scoped>
 .home{
-  display: flex;
+  display: grid;
+  grid-template-columns: 250px auto;
   gap: 20px;
-
-  &__news{
-
+}
+@media (max-width: 1024px) {
+  .home{
+    grid-template-columns: 200px auto;
   }
-  &__main{
-
+}
+@media (max-width: 767px) {
+  .home{
+    grid-template-columns: auto;
+    &__news{
+      order: 2
+    }
+    &__main{
+      order: 1
+    }
   }
-
 }
 </style>

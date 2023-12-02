@@ -56,6 +56,8 @@ const selectedDay= ref('')
 const selectedDate = ref({ month: '', day: null, days: [] });
 const date = ref('')
 
+defineProps(['modelValue']);
+const emits = defineEmits(['update:modelValue']);
 
 const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
@@ -76,11 +78,16 @@ const chooseMonth = (month) => {
 const chooseDay = (day) => {
   selectedDay.value = day
   selectedDate.value.day = day;
+  emits('update:selectedDate');
   isVisibleCalendar.value = false;
   isMonth.value = false;
   console.log(selectedDate.value)
 }
 </script>
+
+
+
+
 
 <style scoped lang="scss">
 .date-input{
