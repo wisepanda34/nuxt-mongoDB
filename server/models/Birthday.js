@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const birthdaySchema = new mongoose.Schema({
     name: {
         type: String,
-        // required: true,
+        required: true,
         trim: true
     },
     surname: {
@@ -15,9 +15,9 @@ const birthdaySchema = new mongoose.Schema({
         trim: true
     },
     birthday: {
-        type: String,
-        // required: true,
-        trim: true
+        day: Number,
+        month: Number,
+        year: Number,
     }
 })
 //Compiling Schema

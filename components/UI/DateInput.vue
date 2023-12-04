@@ -36,28 +36,28 @@
 
 <script setup>
 const months = [
-  { name: 'January', countDays: 31 },
-  { name: 'February', countDays: 29 },
-  { name: 'March', countDays: 31 },
-  { name: 'April', countDays: 30 },
-  { name: 'May', countDays: 31 },
-  { name: 'June', countDays: 30 },
-  { name: 'July', countDays: 31 },
-  { name: 'August', countDays: 31 },
-  { name: 'September', countDays: 30 },
-  { name: 'October', countDays: 31 },
-  { name: 'November', countDays: 30 },
-  { name: 'December', countDays: 31 }
+  { name: 'January', indexMonth: 0, countDays: 31 },
+  { name: 'February', indexMonth: 1, countDays: 29 },
+  { name: 'March', indexMonth: 2, countDays: 31 },
+  { name: 'April', indexMonth: 3, countDays: 30 },
+  { name: 'May', indexMonth: 4, countDays: 31 },
+  { name: 'June', indexMonth: 5, countDays: 30 },
+  { name: 'July', indexMonth: 6, countDays: 31 },
+  { name: 'August', indexMonth: 7, countDays: 31 },
+  { name: 'September', indexMonth: 8, countDays: 30 },
+  { name: 'October', indexMonth: 9, countDays: 31 },
+  { name: 'November', indexMonth: 10, countDays: 30 },
+  { name: 'December', indexMonth: 11, countDays: 31 }
 ];
 const isVisibleCalendar = ref(false)
 const isMonth = ref(false)
-const selectedMonth = ref('')
-const selectedDay= ref('')
-const selectedDate = ref({ month: '', day: null, days: [] });
+const selectedMonth = ref(null)
+const selectedDay= ref(null)
+const selectedDate = ref({ month: null, indexMonth: null, day: null, days: [] });
 const date = ref('')
 
-defineProps(['modelValue']);
-const emits = defineEmits(['update:modelValue']);
+defineProps(['selectedDate']);
+const emits = defineEmits(['update:selectedDate']);
 
 const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
@@ -72,13 +72,13 @@ watch(selectedDay, () => {
 
 const chooseMonth = (month) => {
   selectedMonth.value = month.name
-  selectedDate.value = { month: month.name, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
+  selectedDate.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
   isMonth.value = false;
 }
 const chooseDay = (day) => {
   selectedDay.value = day
   selectedDate.value.day = day;
-  emits('update:selectedDate');
+  emits('update:selectedDate', selectedDate.value);
   isVisibleCalendar.value = false;
   isMonth.value = false;
   console.log(selectedDate.value)

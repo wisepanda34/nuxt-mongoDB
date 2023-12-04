@@ -19,6 +19,9 @@
             <div class="friends__date">
               <p>{{convertDate(friend.birthday)}}</p>
             </div>
+            <div class="friends__date">
+              <p>{{convertAge(friend.birthday)}}</p>
+            </div>
           </div>
 
           <transition-fade>
@@ -50,7 +53,7 @@
               v-model.trim="surname"
               class="friends__input"
           />
-          <DateInput v-model="date"/>
+          <DateInput  :date="date" @update:selectedDate="updateDate"/>
           <YearInput v-model="year"/>
           <TextAria
               id="idInfo"
@@ -72,13 +75,15 @@
 </template>
 
 <script setup>
-import convertDate from "~/utils/convertDate.js";
+
 import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import DateInput from "~/components/UI/DateInput.vue";
 import YearInput from "~/components/UI/YearInput.vue";
 import TextAria from "~/components/UI/TextAria.vue";
 const buttonText = ref("Add friend")
+import convertDate from "~/utils/convertDate.js";
+import convertAge from "~/utils/convertAge.js";
 const friends=ref([])
 
 
@@ -87,36 +92,45 @@ const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
 };
 
-let openFormAddFriend = ref(true)
+let openFormAddFriend = ref(false)
 const toggleOpenForm = ()=>{
   openFormAddFriend.value = !openFormAddFriend.value;
   buttonText.value = openFormAddFriend.value === true ? "Close form" : "Add friend"
 }
-const name = ref('Tommy')
-const surname = ref('Cruz')
+const name = ref('')
+const surname = ref('')
 const info = ref('actor')
-const date = ref({})
-const year = ref('')
+const date = ref(null)
+const year = ref(Number)
+
+const updateDate = (newDate) => {
+  date.value = newDate;
+};
 
 const onSubmitFriend = async () => {
 
-  const dataNewFriend = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: name.value,
-      surname: surname.value,
-      birthday: {
-        day: date.value,
-        month: date.value,
-        year: year.value
-      },
-      info: info.value,
-    })
-  }
   try {
+    const { day, indexMonth } = date.value
+    if(!day || !indexMonth) {
+      console.log("Invalid data from DateInput")
+      return
+    }
+    const dataNewFriend = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.value,
+        surname: surname.value,
+        birthday: {
+          day: day,
+          month: indexMonth,
+          year: year.value
+        },
+        info: info.value,
+      })
+    }
     const response = await fetch('/api/create-friend', dataNewFriend);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -167,7 +181,7 @@ onMounted(()=>{
   }
   &__item-header{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 1fr 0.5fr;
   }
   &__title{
     margin: 20px 0;

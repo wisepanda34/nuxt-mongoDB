@@ -1,24 +1,22 @@
-const convertDate = function (dateString) {
-    const dateObject = new Date(dateString);
-    // Получение дня месяца (без нулей)
-    const day = dateObject.getDate();
+const convertDate = function (birthday) {
+   try{
+       const  { day, month, year } = birthday
+       if(!day || !month) {
+           throw new Error('Invalid date format')
+       }
+       const friendBirthday = new Date( year, month-1, day )
 
-    // Получение названия месяца (полное название)
-    const monthOptions = { month: "long" };
-    const month = dateObject.toLocaleDateString("en-US", monthOptions);
-    return `${day} ${month}`
+       // Получение названия месяца (полное название)
+       const monthOptions = { month: "long"};
+       const formattedMonth =friendBirthday.toLocaleDateString("en-US", monthOptions)
+
+       // Получение дня месяца (без нулей)
+       const formattedDay = friendBirthday.getDate();
+
+       return `${formattedMonth} ${formattedDay}`;
+   }catch (error) {
+       console.error('Error in convertDate:', error.message);
+       return 'Invalid Date';
+   }
 }
 export default convertDate
-
-
-// const convertDate = function (dateString) {
-//     const dateObject = new Date(dateString);
-//     // Получение дня месяца (без нулей)
-//     const day = dateObject.getDate();
-//
-//     // Получение названия месяца (полное название)
-//     const monthOptions = { month: "long" };
-//     const month = dateObject.toLocaleDateString("en-US", monthOptions);
-//     return `${day} ${month}`
-// }
-// export default convertDate
