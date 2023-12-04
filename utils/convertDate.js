@@ -1,19 +1,30 @@
-const convertDate = function (birthday) {
+
+const convertDate = function (birthday, params) {
    try{
        const  { day, month, year } = birthday
-       if(!day || !month) {
-           throw new Error('Invalid date format')
+
+       if(year){
+           const friendBirthday = new Date( year, month-1, day )
+
+           // Получение названия месяца (полное название)
+           const monthOptions = { month: "long"};
+           const formattedMonth = friendBirthday.toLocaleDateString("en-US", monthOptions)
+
+           // Получение дня месяца (без нулей)
+           const formattedDay = friendBirthday.getDate();
+
+           return `${formattedMonth} ${formattedDay}`;
+       }else{
+           const formattedDay = day
+           const foundMonth = params.months.find( item => item.indexMonth === month )
+
+            if(foundMonth) {
+                return `${foundMonth.name} ${formattedDay}`;
+            }else {
+                console.error('Error in convertDate: Month not found');
+                return 'Invalid Date';
+            }
        }
-       const friendBirthday = new Date( year, month-1, day )
-
-       // Получение названия месяца (полное название)
-       const monthOptions = { month: "long"};
-       const formattedMonth =friendBirthday.toLocaleDateString("en-US", monthOptions)
-
-       // Получение дня месяца (без нулей)
-       const formattedDay = friendBirthday.getDate();
-
-       return `${formattedMonth} ${formattedDay}`;
    }catch (error) {
        console.error('Error in convertDate:', error.message);
        return 'Invalid Date';

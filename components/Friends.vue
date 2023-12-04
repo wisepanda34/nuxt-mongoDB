@@ -17,7 +17,7 @@
               <p>{{friend.name}} {{friend.surname}}</p>
             </div>
             <div class="friends__date">
-              <p>{{convertDate(friend.birthday)}}</p>
+              <p>{{convertDate(friend.birthday, monthsStore)}}</p>
             </div>
             <div class="friends__date">
               <p>{{convertAge(friend.birthday)}}</p>
@@ -75,15 +75,17 @@
 </template>
 
 <script setup>
-
 import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import DateInput from "~/components/UI/DateInput.vue";
 import YearInput from "~/components/UI/YearInput.vue";
 import TextAria from "~/components/UI/TextAria.vue";
-const buttonText = ref("Add friend")
 import convertDate from "~/utils/convertDate.js";
 import convertAge from "~/utils/convertAge.js";
+import {useMonths} from "~/store/months.js";
+
+const monthsStore = useMonths()
+const buttonText = ref("Add friend")
 const friends=ref([])
 
 
