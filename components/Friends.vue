@@ -53,8 +53,8 @@
               v-model.trim="surname"
               class="friends__input"
           />
-          <DateInput  :date="date" @update:selectedDate="updateDate"/>
-          <YearInput v-model="year"/>
+          <DateInput :date="date" @update:selectedDate="updateDate"/>
+          <YearInput :year="year" @update:selectedYear="updateYear"/>
           <TextAria
               id="idInfo"
               textLabel="Info"
@@ -103,10 +103,13 @@ const name = ref('')
 const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
-const year = ref(Number)
+const year = ref(null)
 
 const updateDate = (newDate) => {
   date.value = newDate;
+};
+const updateYear = (newDate) => {
+  year.value = newDate;
 };
 
 const onSubmitFriend = async () => {

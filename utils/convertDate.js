@@ -22,12 +22,12 @@ const convertDate = function (birthday, params) {
                 return `${foundMonth.name} ${formattedDay}`;
             }else {
                 console.error('Error in convertDate: Month not found');
-                return 'Invalid Date';
+                return 'Month not found';
             }
        }
    }catch (error) {
        console.error('Error in convertDate:', error.message);
-       return 'Invalid Date';
+       return 'Invalid Date in convertDate';
    }
 }
 export default convertDate

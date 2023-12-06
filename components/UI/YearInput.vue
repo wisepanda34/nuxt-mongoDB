@@ -1,21 +1,19 @@
 <!-- YearInput.vue -->
 <template>
-  <div class="year-input">
-    <label for="year-input">Year</label>
-    <input
-        id="year-input"
-        class="year-input__field"
-        placeholder="Choose year if you know"
-        :value="modelValue"
-        readonly
+  <div class="year">
+    <p>Year</p>
+    <div
+        class="year__field"
         @click="toggleShowCalendar"
-    />
-    <div v-if="isVisibleCalendar" class="year-input__calendar">
-      <ul class="year-input__list">
+    >
+      <p>{{selectedYear}}</p>
+    </div>
+    <div v-if="isVisibleCalendar" class="year__calendar">
+      <ul class="year__list">
         <li
             v-for="(item, index) in generateYears(period[0], period[1])"
             :key="index"
-            class="year-input__item"
+            class="year__item"
             @click="chooseYear(item)"
         >
           {{ item }}
@@ -27,10 +25,10 @@
 
 <script setup>
 
-defineProps(['modelValue']);
-const emits = defineEmits(['update:modelValue']);
-
-const period = [1970, 2025];
+defineProps(['selectedYear']);
+const emit = defineEmits(['update:selectedYear']);
+const selectedYear = ref(null)
+const period = [1960, 2025];
 const isVisibleCalendar = ref(false);
 
 const toggleShowCalendar = () => {
@@ -42,7 +40,8 @@ const generateYears = (start, end) => {
 };
 
 const chooseYear = (item) => {
-  emits('update:modelValue', item);
+  selectedYear.value = item
+  emit('update:selectedYear', selectedYear.value);
   isVisibleCalendar.value = false;
 };
 </script>
@@ -52,7 +51,7 @@ const chooseYear = (item) => {
 
 
 <style scoped lang="scss">
-.year-input{
+.year{
   position: relative;
   width: 400px;
 
@@ -63,7 +62,7 @@ const chooseYear = (item) => {
 
   &__field{
     width: 100%;
-    height: 100%;
+    height: 40px;
     padding: 8px;
     border-radius: 4px;
     background: white;
@@ -90,7 +89,7 @@ const chooseYear = (item) => {
   }
   &__list{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     row-gap: 10px;
     column-gap: 10px;
   }

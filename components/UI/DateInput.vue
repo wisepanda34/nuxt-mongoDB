@@ -1,37 +1,35 @@
 <template>
-  <div class="date-input">
-      <label for="date-input">Date</label>
-      <input
-          id="date-input"
-          class="date-input__field"
-          :value="date"
-          placeholder="Choose date"
-          readonly
-          @click="toggleShowCalendar"
-      />
-      <div v-if="isVisibleCalendar" class="date-input__calendar">
-        <ul v-if="isMonth" class="date-input__month-list">
-          <li
-              v-for="(item, index) in monthsStore.months"
-              :key="index"
-              class="date-input__month-item"
-              @click="chooseMonth(item)"
-          >
-            {{ item.name }}
-          </li>
-        </ul>
-        <ul v-else class="date-input__day-list">
-          <li
-              v-for="(day, index) in selectedDate.days"
-              :key="index"
-              class="date-input__day-item"
-              @click="chooseDay(day)"
-          >
-            {{day}}
-          </li>
-        </ul>
-      </div>
-  </div>
+    <div class="date">
+        <p>Date</p>
+        <div
+            class="date__field"
+            @click="toggleShowCalendar"
+        >
+          <p>{{date}}</p>
+        </div>
+        <div v-if="isVisibleCalendar" class="date__calendar">
+            <ul v-if="isMonth" class="date__month-list">
+                <li
+                    v-for="(item, index) in monthsStore.months"
+                    :key="index"
+                    class="date__month-item"
+                    @click="chooseMonth(item)"
+                >
+                  {{ item.name }}
+                </li>
+            </ul>
+            <ul v-else class="date__day-list">
+                <li
+                    v-for="(day, index) in selectedDate.days"
+                    :key="index"
+                    class="date__day-item"
+                    @click="chooseDay(day)"
+                >
+                  {{day}}
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -45,7 +43,7 @@ const selectedDate = ref({ month: null, indexMonth: null, day: null, days: [] })
 const date = ref('')
 
 defineProps(['selectedDate']);
-const emits = defineEmits(['update:selectedDate']);
+const emit = defineEmits(['update:selectedDate']);
 
 const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
@@ -66,7 +64,7 @@ const chooseMonth = (month) => {
 const chooseDay = (day) => {
   selectedDay.value = day
   selectedDate.value.day = day;
-  emits('update:selectedDate', selectedDate.value);
+  emit('update:selectedDate', selectedDate.value);
   isVisibleCalendar.value = false;
   isMonth.value = false;
   console.log(selectedDate.value)
@@ -78,7 +76,7 @@ const chooseDay = (day) => {
 
 
 <style scoped lang="scss">
-.date-input{
+.date{
   position: relative;
   width: 400px;
 
@@ -89,7 +87,7 @@ const chooseDay = (day) => {
 
   &__field{
     width: 100%;
-    height: 100%;
+    height: 40px;
     padding: 8px;
     border-radius: 4px;
     background: white;
@@ -112,7 +110,7 @@ const chooseDay = (day) => {
   }
   &__month-list{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     row-gap: 10px;
     column-gap: 10px;
   }
@@ -126,7 +124,7 @@ const chooseDay = (day) => {
   }
   &__day-list{
     display: grid;
-    grid-template-columns:  1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(7, 1fr);
   }
   &__day-item{
     cursor: pointer;
