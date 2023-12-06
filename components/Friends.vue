@@ -25,8 +25,18 @@
           </div>
 
           <transition-fade>
-            <div v-if="openInfo===index" class="box">
-              <p>{{ friend.info }}</p>
+            <div v-if="openInfo===index" class="friends__box">
+              <p>{{ friend.info }} {{friend._id}}</p>
+              <div class="friends__edit" @click.stop="showEditMenu">
+                <img src="/images/edit.png" alt="edit">
+                <transition-fade>
+                  <div v-show="isOpen" class="friends__editMenu">
+                    <div class="friends__editItem" @click.stop="changeFriend(friend._id)">change</div>
+                    <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
+                  </div>
+                </transition-fade>
+
+              </div>
             </div>
           </transition-fade>
 
@@ -158,6 +168,7 @@ const fetchDataFriends = async () => {
       return { data: null, error };
     }
     friends.value = data
+    // console.log(data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -167,6 +178,49 @@ const fetchDataFriends = async () => {
 onMounted(()=>{
   fetchDataFriends()
 })
+
+const isOpen = ref(false)
+const showEditMenu = () => {
+  isOpen.value = true
+}
+const closeEditMenu = () => {
+  isOpen.value = false
+}
+
+const removeFriend = (id,index) => {
+  closeEditMenu()
+  toggleInfo(index)
+  removeSubmitFriend(id)
+}
+const changeFriend = (index) => {
+  closeEditMenu()
+  toggleInfo(index)
+
+}
+const removeSubmitFriend = async (id) => {
+  if(!id) {
+    console.log("Did not select friend for remove")
+  }
+  try{
+    console.log("id:",typeof id)
+    const response = await fetch("/api/delete-friend", {
+      method: "DELETE",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({id})
+    })
+
+    if(!response.ok) {
+      return  `HTTP error! Status: ${response.status}`
+    }
+    console.log('Friend deleted successfully');
+    await fetchDataFriends();
+  }catch (error) {
+    console.error("Error removeSubmitFriend", error.message)
+  }
+}
+
 </script>
 
 
@@ -202,5 +256,38 @@ onMounted(()=>{
       height: 100%;
     }
   }
+  &__box{
+    display: grid;
+    grid-template-columns: auto 40px;
+    gap: 20px;
+    padding-top: 10px;
+  }
+  &__edit{
+    position: relative;
+    width: 30px;
+    border: 1px solid #fab023;
+    padding: 4px;
+    img{
+      width: 20px;
+      height: 20px;
+    }
+  }
+  &__editMenu{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 70px;
+    height: 60px;
+
+    background: #fff;
+  }
+  &__editItem{
+    padding: 5px 5px 5px 12px;
+    &:hover{
+      background: #fde7e7;
+    }
+  }
+
 }
 </style>
