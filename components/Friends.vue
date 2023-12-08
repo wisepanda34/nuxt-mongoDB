@@ -4,7 +4,7 @@
 
     <div v-if="openFormAddFriend===false" class="friends__info">
       <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
-      <ul>
+      <TransitionGroup name="list" tag="ul">
         <li
             class="friends__item"
             v-for="(friend, index) in friends"
@@ -24,24 +24,24 @@
             </div>
           </div>
 
-          <transition-fade>
+          <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
             <div v-if="openInfo===index" class="friends__box">
               <p>{{ friend.info }} {{friend._id}}</p>
               <div class="friends__edit" @click.stop="showEditMenu">
                 <img src="/images/edit.png" alt="edit">
-                <transition-fade>
+                <transition name="bounce">
                   <div v-show="isOpen" class="friends__editMenu">
                     <div class="friends__editItem" @click.stop="changeFriend(friend._id)">change</div>
                     <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
                   </div>
-                </transition-fade>
+                </transition>
 
               </div>
             </div>
-          </transition-fade>
+          </transition>
 
         </li>
-      </ul>
+      </TransitionGroup>
     </div>
 
     <div v-if="openFormAddFriend===true" class="friends__new">
@@ -126,6 +126,7 @@ const onSubmitFriend = async () => {
 
   try {
     const { day, indexMonth } = date.value
+    console.log(day, indexMonth)
     if(!day || !indexMonth) {
       console.log("Invalid data from DateInput")
       return
@@ -151,9 +152,12 @@ const onSubmitFriend = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);  // Вывод ответа от сервера (например, сообщение об успешном создании пользователя)
+    console.log(data);
+
+
     await fetchDataFriends()
     openFormAddFriend.value = false
+
   } catch (error) {
     console.error('Error:', error.message);
     console.log('Error:', error.message);
