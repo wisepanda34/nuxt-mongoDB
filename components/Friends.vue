@@ -126,8 +126,8 @@ const onSubmitFriend = async () => {
   try {
     const { day, indexMonth } = date.value
     console.log(day, indexMonth)
-    if(!day || !indexMonth) {
-      console.log("Invalid data from DateInput")
+    if(!day || !indexMonth || !name.value) {
+      console.log("Invalid Name or data from DateInput or ")
       return
     }
     const dataNewFriend = {
@@ -191,7 +191,6 @@ const closeEditMenu = () => {
 }
 
 const removeFriend = (id,index) => {
-  closeEditMenu()
   toggleInfo(index)
   removeSubmitFriend(id)
 }
@@ -201,11 +200,11 @@ const changeFriend = (index) => {
 
 }
 const removeSubmitFriend = async (id) => {
+
   if(!id) {
     console.log("Did not select friend for remove")
   }
   try{
-    console.log("id:",typeof id)
     const response = await fetch("/api/delete-friend", {
       method: "DELETE",
       headers: {

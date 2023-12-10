@@ -11,7 +11,6 @@ export default defineEventHandler( async ()=> {
       // Сравниваем даты
       return dateA - dateB;
     });
-    // console.log(response)
     return { birthdays: response }
   }catch (error) {
     console.log(error)
