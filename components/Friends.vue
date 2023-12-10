@@ -2,7 +2,7 @@
   <div class="friends">
     <Button :text="buttonText" type="button" @click="toggleOpenForm"/>
 
-    <div v-if="openFormAddFriend===false" class="friends__info">
+    <div v-if="!openFormAddFriend" class="friends__info">
       <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
       <TransitionGroup name="list" tag="ul">
         <li
@@ -44,7 +44,7 @@
       </TransitionGroup>
     </div>
 
-    <div v-if="openFormAddFriend===true" class="friends__new">
+    <div v-if="openFormAddFriend" class="friends__new">
       <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
       <form class="friends__form" @submit.prevent="onSubmitFriend">
           <Input
@@ -107,14 +107,13 @@ const toggleInfo = (index) => {
 let openFormAddFriend = ref(false)
 const toggleOpenForm = ()=>{
   openFormAddFriend.value = !openFormAddFriend.value;
-  buttonText.value = openFormAddFriend.value === true ? "Close form" : "Add friend"
+  buttonText.value = true === openFormAddFriend.value ? "Close form" : "Add friend"
 }
 const name = ref('')
 const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
 const year = ref(null)
-
 const updateDate = (newDate) => {
   date.value = newDate;
 };
