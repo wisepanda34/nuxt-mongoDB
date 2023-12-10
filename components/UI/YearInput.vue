@@ -25,9 +25,9 @@
 
 <script setup>
 
-defineProps(['selectedYear']);
+defineProps(['year']);
 const emit = defineEmits(['update:selectedYear']);
-const selectedYear = ref(null)
+const selectedYear = ref( null )
 const period = [1960, 2025];
 const isVisibleCalendar = ref(false);
 

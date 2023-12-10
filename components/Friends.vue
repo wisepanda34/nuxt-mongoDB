@@ -31,7 +31,7 @@
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
                   <div v-show="isOpen" class="friends__editMenu">
-                    <div class="friends__editItem" @click.stop="changeFriend(friend._id)">change</div>
+                    <div class="friends__editItem" @click.stop="updateFriend(friend._id)">change</div>
                     <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
                   </div>
                 </transition>
@@ -96,7 +96,7 @@ import {useMonths} from "~/store/months.js";
 
 const monthsStore = useMonths()
 const buttonText = ref("Add friend")
-const friends=ref([])
+const friends = ref([])
 
 
 let openInfo = ref(null)
@@ -113,7 +113,7 @@ const name = ref('')
 const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
-const year = ref(null)
+const year = ref(1990)
 const updateDate = (newDate) => {
   date.value = newDate;
 };
@@ -171,7 +171,7 @@ const fetchDataFriends = async () => {
       return { data: null, error };
     }
     friends.value = data
-    // console.log(data)
+    console.log(data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -194,10 +194,11 @@ const removeFriend = (id,index) => {
   toggleInfo(index)
   removeSubmitFriend(id)
 }
-const changeFriend = (index) => {
+const updateFriend = ( id, index ) => {
   closeEditMenu()
   toggleInfo(index)
-
+  toggleOpenForm()
+  updateSubmitFriend(id)
 }
 const removeSubmitFriend = async (id) => {
 
@@ -221,6 +222,18 @@ const removeSubmitFriend = async (id) => {
   }catch (error) {
     console.error("Error removeSubmitFriend", error.message)
   }
+}
+
+const updateSubmitFriend =  (id) => {
+  const choosedFriend = friends.value.find( item => item._id === id) || null;
+  console.log(choosedFriend)
+  name.value = choosedFriend.name
+  surname.value = choosedFriend.surname
+  info.value = choosedFriend.info
+  year.value = choosedFriend.birthday.year
+  date.value = `${choosedFriend.birthday.month} ${choosedFriend.birthday.day}`
+  console.log(year.value, date.value)
+
 }
 
 </script>
