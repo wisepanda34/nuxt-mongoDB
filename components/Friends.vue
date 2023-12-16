@@ -31,7 +31,7 @@
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
                   <div v-show="isOpen" class="friends__editMenu">
-                    <div class="friends__editItem" @click.stop="updateFriend(friend._id)">change</div>
+                    <div class="friends__editItem" @click.stop="updateFriend(index, friend._id)">change</div>
                     <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
                   </div>
                 </transition>
@@ -113,12 +113,13 @@ const name = ref('')
 const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
-const year = ref(1990)
+const year = ref(null)
 const updateDate = (newDate) => {
   date.value = newDate;
 };
 const updateYear = (newDate) => {
   year.value = newDate;
+  console.log( year.value)
 };
 
 const onSubmitFriend = async () => {
@@ -194,11 +195,27 @@ const removeFriend = (id,index) => {
   toggleInfo(index)
   removeSubmitFriend(id)
 }
-const updateFriend = ( id, index ) => {
+const updateFriend = (index, id) => {
   closeEditMenu()
   toggleInfo(index)
   toggleOpenForm()
-  updateSubmitFriend(id)
+  const choosedFriend = friends.value.find( item => item._id === id) || null;
+  name.value = choosedFriend.name
+  surname.value = choosedFriend.surname
+  info.value = choosedFriend.info
+  year.value = choosedFriend.birthday.year
+  console.log(choosedFriend.birthday.year)
+}
+const updateSubmitFriend =  (id) => {
+  const choosedFriend = friends.value.find( item => item._id === id) || null;
+  console.log(choosedFriend)
+  name.value = choosedFriend.name
+  surname.value = choosedFriend.surname
+  info.value = choosedFriend.info
+  year.value = choosedFriend.birthday.year
+  date.value = `${choosedFriend.birthday.month} ${choosedFriend.birthday.day}`
+  console.log(year.value, date.value)
+
 }
 const removeSubmitFriend = async (id) => {
 
@@ -224,17 +241,7 @@ const removeSubmitFriend = async (id) => {
   }
 }
 
-const updateSubmitFriend =  (id) => {
-  const choosedFriend = friends.value.find( item => item._id === id) || null;
-  console.log(choosedFriend)
-  name.value = choosedFriend.name
-  surname.value = choosedFriend.surname
-  info.value = choosedFriend.info
-  year.value = choosedFriend.birthday.year
-  date.value = `${choosedFriend.birthday.month} ${choosedFriend.birthday.day}`
-  console.log(year.value, date.value)
 
-}
 
 </script>
 

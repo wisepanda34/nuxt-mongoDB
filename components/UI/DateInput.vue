@@ -42,7 +42,7 @@ const selectedDay= ref(null)
 const selectedDate = ref({ month: null, indexMonth: null, day: null, days: [] });
 const date = ref('')
 
-defineProps(['selectedDate']);
+const props = defineProps(['selectedDate']);
 const emit = defineEmits(['update:selectedDate']);
 
 const toggleShowCalendar = () => {

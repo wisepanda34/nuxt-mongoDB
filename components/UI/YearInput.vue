@@ -25,9 +25,9 @@
 
 <script setup>
 
-defineProps(['year']);
+const props = defineProps(['year']);
 const emit = defineEmits(['update:selectedYear']);
-const selectedYear = ref( null )
+const selectedYear = ref( props.year )
 const period = [1960, 2025];
 const isVisibleCalendar = ref(false);
 
@@ -59,7 +59,6 @@ const chooseYear = (item) => {
   flex-direction: column;
   gap: 5px;
   margin: 15px 0;
-
   &__field{
     width: 100%;
     height: 40px;
