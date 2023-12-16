@@ -107,7 +107,7 @@ const toggleInfo = (index) => {
 let openFormAddFriend = ref(false)
 const toggleOpenForm = ()=>{
   openFormAddFriend.value = !openFormAddFriend.value;
-  buttonText.value = true === openFormAddFriend.value ? "Close form" : "Add friend"
+  buttonText.value = openFormAddFriend.value === true  ? "Close form" : "Add friend"
 }
 const name = ref('')
 const surname = ref('')
