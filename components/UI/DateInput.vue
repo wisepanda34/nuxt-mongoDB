@@ -52,30 +52,23 @@ const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
   isMonth.value = true
 };
-// computed(selectedDateCurrent, () => {
-//   const num = selectedDateCurrent.value.day
-//   const month = selectedDateCurrent.value.month
-//   date.value = `${month} ${num}`
-//   console.log(num)
-//   console.log(month)
-// })
 watch(selectedDate, () => {
   const num = selectedDateCurrent.value.day
   const month = selectedDateCurrent.value.month
   date.value = `${month} ${num}`
-  console.log(num)
-  console.log(month)
+  // console.log(num)
+  // console.log(month)
 })
 
 const chooseMonth = (month) => {
   selectedMonth.value = month.name
   selectedDateCurrent.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
   isMonth.value = false;
-  console.log( 'chooseMonth:', selectedDateCurrent.value.month)
+  // console.log( 'chooseMonth:', selectedDateCurrent.value.month)
 }
 const chooseDay = (day) => {
   selectedDay.value = day
-  console.log('day:', day)
+  // console.log('day:', day)
   selectedDateCurrent.value.day = day;
   const { indexMonth } = selectedDateCurrent.value
   selectedDate.value = {
@@ -88,11 +81,11 @@ const chooseDay = (day) => {
   console.log(selectedDate.value)
 }
 onMounted(() => {
-  console.log("onMounted:", props.date)
+  // console.log("onMounted:", props.date)
   if(props.date){
     const foundMonth = monthsStore.months.find(item => item.indexMonth === props.date.month)
     selectedDateCurrent.value = { month: foundMonth.name, indexMonth: foundMonth.indexMonth, day: props.date.day, days: foundMonth.countDays };
-    console.log("onMounted:", selectedDateCurrent.value)
+    // console.log("onMounted:", selectedDateCurrent.value)
     selectedDate.value = {
       day: selectedDateCurrent.value.day,
       month: selectedDateCurrent.value.month

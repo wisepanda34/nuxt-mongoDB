@@ -3,13 +3,13 @@ import BirthdayModel from "~/server/models/Birthday.js";
 
 export default defineEventHandler(async(event)=> {
     try {
-        const body = await readBody(event)
+        const body = await readBody(event);
         const { id } = body; // Access the "id" property from the body
-        console.log("ID:", id)
+        console.log("ID:", id);
         if (!id) {
-            throw new Error('No ID provided')
+            throw new Error('No ID provided');
         }
-        await BirthdayModel.deleteOne({ _id: id })
+        await BirthdayModel.deleteOne({ _id: id });
         return {
             status: 200,
             body: { message: 'Друг успешно удален' },
@@ -20,6 +20,6 @@ export default defineEventHandler(async(event)=> {
         return {
             status: 500,
             body: { error: 'Внутренняя ошибка сервера' },
-        }
+        };
     }
-})
+});

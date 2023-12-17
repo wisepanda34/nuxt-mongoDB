@@ -1,6 +1,7 @@
 <template>
   <div class="friends">
-    <Button :text="buttonText" type="button" @click="toggleOpenForm"/>
+    <Button v-if="!openFormAddFriend" text="Add friend" type="button" @click="openForm"/>
+    <Button v-if="openFormAddFriend" text="Close friend" type="button" @click="closeForm"/>
 
     <div v-if="!openFormAddFriend" class="friends__info">
       <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
@@ -73,10 +74,18 @@
               class="friends__input"
           />
           <Button
-              text="Save friend"
-              type="submit"
-              class="friends__btn"
-              @click.prevent="onSubmitFriend"
+            v-if="!updateProcess"
+            text="Save friend"
+            type="submit"
+            class="friends__btn"
+            @click.prevent="onSubmitFriend"
+          />
+          <Button
+            v-if="updateProcess"
+            text="Update friend"
+            type="submit"
+            class="friends__btn"
+            @click.prevent="updateSubmitFriend"
           />
       </form>
     </div>
@@ -95,25 +104,35 @@ import convertAge from "~/utils/convertAge.js";
 import {useMonths} from "~/store/months.js";
 
 const monthsStore = useMonths()
-const buttonText = ref("Add friend")
 const friends = ref([])
+const chosenFriend = ref({})
 
+const name = ref('')
+const surname = ref('')
+const info = ref('actor')
+const date = ref(null)
+const year = ref(null)
 
 let openInfo = ref(null)
 const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
 };
 
+let updateProcess = ref(false)
 let openFormAddFriend = ref(false)
-const toggleOpenForm = ()=>{
-  openFormAddFriend.value = !openFormAddFriend.value;
-  buttonText.value = openFormAddFriend.value === true  ? "Close form" : "Add friend"
+const openForm = ()=> {
+  openFormAddFriend.value = true;
 }
-const name = ref('')
-const surname = ref('')
-const info = ref('actor')
-const date = ref(null)
-const year = ref(null)
+const closeForm = ()=> {
+  openFormAddFriend.value = false;
+  name.value = ''
+  surname.value = ''
+  info.value = ''
+  year.value = null
+  date.value = null
+  updateProcess.value = false
+}
+
 const updateDate = (newDate) => {
   date.value = newDate;
 };
@@ -172,7 +191,7 @@ const fetchDataFriends = async () => {
       return { data: null, error };
     }
     friends.value = data
-    console.log(data)
+    // console.log(data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -183,6 +202,7 @@ onMounted(()=>{
   fetchDataFriends()
 })
 
+
 const isOpen = ref(false)
 const showEditMenu = () => {
   isOpen.value = true
@@ -191,36 +211,72 @@ const closeEditMenu = () => {
   isOpen.value = false
 }
 
+
 const removeFriend = (id,index) => {
   toggleInfo(index)
   removeSubmitFriend(id)
 }
-const updateFriend = (index, id) => {
 
-  const choosedFriend = friends.value.find( item => item._id === id) || null;
-  name.value = choosedFriend.name
-  surname.value = choosedFriend.surname
-  info.value = choosedFriend.info
-  year.value = choosedFriend.birthday.year
+const updateFriend = (index, id) => {
+  updateProcess.value = true
+  chosenFriend.value = friends.value.find( item => item._id === id) || null;
+
+  name.value = chosenFriend.value.name
+  surname.value = chosenFriend.value.surname
+  info.value = chosenFriend.value.info
+  year.value = chosenFriend.value.birthday.year
   date.value = {
-    day: choosedFriend.birthday.day,
-    month: choosedFriend.birthday.month
+    day: chosenFriend.value.birthday.day,
+    month: chosenFriend.value.birthday.month
   }
   console.log(date.value)
   closeEditMenu()
   toggleInfo(index)
-  toggleOpenForm()
+  openForm()
 }
-const updateSubmitFriend =  (id) => {
-  const choosedFriend = friends.value.find( item => item._id === id) || null;
-  console.log(choosedFriend)
-  name.value = choosedFriend.name
-  surname.value = choosedFriend.surname
-  info.value = choosedFriend.info
-  year.value = choosedFriend.birthday.year
-  date.value = `${choosedFriend.birthday.month} ${choosedFriend.birthday.day}`
-  console.log(year.value, date.value)
+const updateSubmitFriend = async () => {
+  try {
 
+    // if(!_id || !day || !month || !name.value) {
+    //   console.log("Invalid Name or data from DateInput")
+    //   return
+    // }
+    const dataUpdateFriend = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        _id: chosenFriend.value._id,
+        name: name.value,
+        surname: surname.value,
+        birthday: {
+          day: date.value.day,
+          month: date.value.month,
+          year: year.value,
+        },
+        info: info.value,
+      })
+    }
+    console.log('dataUpdateFriend >> ', dataUpdateFriend)
+    const response = await fetch('/api/update-friend', dataUpdateFriend);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+
+    await fetchDataFriends()
+
+  } catch (error) {
+    console.error('Error:', error.message);
+    console.log('Error:', error.message);
+  } finally {
+    openFormAddFriend.value = false
+    closeForm()
+    updateProcess.value = false
+  }
+  // console.log(year.value, date.value)
 }
 const removeSubmitFriend = async (id) => {
 

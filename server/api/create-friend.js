@@ -2,7 +2,7 @@ import BirthdayModel from "~/server/models/Birthday.js";
 
 export default defineEventHandler(async (event) => {
     try {
-        const { name, surname, birthday, info } = await readBody(event)
+        const { name, surname, birthday, info } = await readBody(event);
 
         const newFriend = new BirthdayModel({
             name,
@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
 
         await newFriend.save();
 
-        console.log('Friend data:', newFriend);
 
         return {
             status: 200, // Успешный статус
