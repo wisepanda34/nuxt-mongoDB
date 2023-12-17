@@ -128,7 +128,7 @@ const onSubmitFriend = async () => {
     const { day, indexMonth } = date.value
     console.log(day, indexMonth)
     if(!day || !indexMonth || !name.value) {
-      console.log("Invalid Name or data from DateInput or ")
+      console.log("Invalid Name or data from DateInput")
       return
     }
     const dataNewFriend = {
@@ -196,15 +196,20 @@ const removeFriend = (id,index) => {
   removeSubmitFriend(id)
 }
 const updateFriend = (index, id) => {
-  closeEditMenu()
-  toggleInfo(index)
-  toggleOpenForm()
+
   const choosedFriend = friends.value.find( item => item._id === id) || null;
   name.value = choosedFriend.name
   surname.value = choosedFriend.surname
   info.value = choosedFriend.info
   year.value = choosedFriend.birthday.year
-  console.log(choosedFriend.birthday.year)
+  date.value = {
+    day: choosedFriend.birthday.day,
+    month: choosedFriend.birthday.month
+  }
+  console.log(date.value)
+  closeEditMenu()
+  toggleInfo(index)
+  toggleOpenForm()
 }
 const updateSubmitFriend =  (id) => {
   const choosedFriend = friends.value.find( item => item._id === id) || null;

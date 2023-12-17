@@ -20,7 +20,7 @@
             </ul>
             <ul v-else class="date__day-list">
                 <li
-                    v-for="(day, index) in selectedDate.days"
+                    v-for="(day, index) in selectedDateCurrent.days"
                     :key="index"
                     class="date__day-item"
                     @click="chooseDay(day)"
@@ -37,38 +37,69 @@ import {useMonths} from "~/store/months.js";
 const monthsStore = useMonths()
 const isVisibleCalendar = ref(false)
 const isMonth = ref(false)
+
 const selectedMonth = ref(null)
 const selectedDay= ref(null)
-const selectedDate = ref({ month: null, indexMonth: null, day: null, days: [] });
+const selectedDateCurrent = ref({ month: null, indexMonth: null, day: null, days: [] });
+const selectedDate = ref(null)
 const date = ref('')
 
-const props = defineProps(['selectedDate']);
+// const props = defineProps(['selectedDate']);
+const props = defineProps(['date']);
 const emit = defineEmits(['update:selectedDate']);
 
 const toggleShowCalendar = () => {
   isVisibleCalendar.value = !isVisibleCalendar.value;
   isMonth.value = true
 };
-
-watch(selectedDay, () => {
-  const num = selectedDate.value.day
-  const month = selectedDate.value.month
+// computed(selectedDateCurrent, () => {
+//   const num = selectedDateCurrent.value.day
+//   const month = selectedDateCurrent.value.month
+//   date.value = `${month} ${num}`
+//   console.log(num)
+//   console.log(month)
+// })
+watch(selectedDate, () => {
+  const num = selectedDateCurrent.value.day
+  const month = selectedDateCurrent.value.month
   date.value = `${month} ${num}`
+  console.log(num)
+  console.log(month)
 })
 
 const chooseMonth = (month) => {
   selectedMonth.value = month.name
-  selectedDate.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
+  selectedDateCurrent.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
   isMonth.value = false;
+  console.log( 'chooseMonth:', selectedDateCurrent.value.month)
 }
 const chooseDay = (day) => {
   selectedDay.value = day
-  selectedDate.value.day = day;
+  console.log('day:', day)
+  selectedDateCurrent.value.day = day;
+  const { indexMonth } = selectedDateCurrent.value
+  selectedDate.value = {
+    day: day,
+    indexMonth: indexMonth
+  }
   emit('update:selectedDate', selectedDate.value);
   isVisibleCalendar.value = false;
   isMonth.value = false;
   console.log(selectedDate.value)
 }
+onMounted(() => {
+  console.log("onMounted:", props.date)
+  if(props.date){
+    const foundMonth = monthsStore.months.find(item => item.indexMonth === props.date.month)
+    selectedDateCurrent.value = { month: foundMonth.name, indexMonth: foundMonth.indexMonth, day: props.date.day, days: foundMonth.countDays };
+    console.log("onMounted:", selectedDateCurrent.value)
+    selectedDate.value = {
+      day: selectedDateCurrent.value.day,
+      month: selectedDateCurrent.value.month
+    }
+
+  }
+})
 </script>
 
 
