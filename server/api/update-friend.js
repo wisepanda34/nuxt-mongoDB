@@ -5,7 +5,7 @@ export default defineEventHandler(async(event)=> {
 
   try {
     const body = await readBody(event);
-    const { _id, name, surname, info, birthday } = body; // Access the "id" property from the body
+    const { _id, name, surname, info, birthday, beforehand } = body; // Access the "id" property from the body
     // const { day, month, year } = birthday;
     // console.log(_id, name, surname, info, day, month, year);
     if (!_id) {
@@ -17,6 +17,7 @@ export default defineEventHandler(async(event)=> {
           surname: surname,
           birthday: birthday,
           info: info,
+          beforehand: beforehand
         },
       }
     );

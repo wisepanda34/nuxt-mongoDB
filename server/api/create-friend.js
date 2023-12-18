@@ -2,7 +2,7 @@ import BirthdayModel from "~/server/models/Birthday.js";
 
 export default defineEventHandler(async (event) => {
     try {
-        const { name, surname, birthday, info } = await readBody(event);
+        const { name, surname, birthday, info, beforehand } = await readBody(event);
         const { day, indexMonth, year } = birthday;
         console.log(day, indexMonth, year);
 
@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
             surname,
             birthday,
             info,
+            beforehand
         });
 
         await newFriend.save();

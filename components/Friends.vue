@@ -31,7 +31,7 @@
 
           <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
             <div v-if="openInfo===index" class="friends__box">
-              <p>{{ friend.info }} ---- id:{{friend._id}}</p>
+              <p>{{ friend.info }} ---- id:{{friend._id}} ----- {{friend.beforehand}}</p>
               <div class="friends__edit" @click.stop="showEditMenu">
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
@@ -77,6 +77,7 @@
               v-model.trim="info"
               class="friends__input"
           />
+          <SelectBeforeHand v-model="selectedDeadline"/>
           <Button
             v-if="!updateProcess"
             text="Save friend"
@@ -107,6 +108,7 @@ import convertDate from "~/utils/convertDate.js";
 import convertAge from "~/utils/convertAge.js";
 import {useMonths} from "~/store/months.js";
 import moment from 'moment';
+import SelectBeforeHand from "~/components/UI/SelectBeforeHand.vue";
 
 
 const monthsStore = useMonths()
@@ -118,16 +120,16 @@ const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
 const year = ref(null)
-let updateProcess = ref(false)
-let openFormAddFriend = ref(false)
-let openInfo = ref(null)
+const selectedDeadline = ref('')
+const updateProcess = ref(false)
+const openFormAddFriend = ref(false)
+const openInfo = ref(null)
 const isOpen = ref(false)
 
 
-
 const currentDate = function() {
-  const date = moment()
-  return date.format('dddd, MMMM D YYYY');
+  const today = moment()
+  return today.format('dddd, MMMM D YYYY');
 }
 const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
@@ -158,6 +160,7 @@ const onSubmitFriend = async () => {
   try {
     const { day, indexMonth } = date.value
     console.log('onSubmitFriend:',day, indexMonth)
+    console.log('onSubmitFriend:',selectedDeadline.value)
     if(!day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
@@ -176,6 +179,7 @@ const onSubmitFriend = async () => {
           year: year.value
         },
         info: info.value,
+        beforehand: selectedDeadline.value
       })
     }
     const response = await fetch('/api/create-friend', dataNewFriend);
@@ -274,8 +278,9 @@ const updateFriend = (index, id) => {
 }
 const updateSubmitFriend = async () => {
   try {
+    console.log('updateSubmitFriend:',selectedDeadline.value)
     console.log(chosenFriend.value._id, date.value.day, date.value.indexMonth, name.value)
-    if(!chosenFriend.value._id || !date.value.day || !date.value.indexMonth || !name.value) {
+    if(!chosenFriend.value._id || !date.value.day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
     }
@@ -294,6 +299,7 @@ const updateSubmitFriend = async () => {
           year: year.value,
         },
         info: info.value,
+        beforehand: selectedDeadline.value
       })
     }
     console.log('dataUpdateFriend >> ', dataUpdateFriend)
@@ -302,7 +308,7 @@ const updateSubmitFriend = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     await fetchDataFriends()
 
@@ -339,7 +345,6 @@ const removeSubmitFriend = async (id) => {
     console.error("Error removeSubmitFriend", error.message)
   }
 }
-
 
 
 </script>

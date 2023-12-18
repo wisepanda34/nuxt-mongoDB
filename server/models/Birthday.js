@@ -18,6 +18,9 @@ const birthdaySchema = new mongoose.Schema({
     day: Number,
     indexMonth: Number,
     year: Number,
+  },
+  beforehand: {
+    type: String || Number
   }
 })
 //Compiling Schema
