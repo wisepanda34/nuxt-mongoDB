@@ -61,11 +61,11 @@ const chooseMonth = (month) => {
   selectedMonth.value = month.name
   selectedDateCurrent.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
   isMonth.value = false;
-  console.log('selectedMonth.value: ',selectedMonth.value)
+  // console.log('selectedMonth.value: ',selectedMonth.value)
 }
 const chooseDay = (day) => {
   selectedDay.value = day
-  console.log('selectedDay.value: ',selectedDay.value)
+  // console.log('selectedDay.value: ',selectedDay.value)
   selectedDateCurrent.value.day = day;
   const { indexMonth } = selectedDateCurrent.value
   selectedDate.value = {
@@ -75,7 +75,7 @@ const chooseDay = (day) => {
   emit('update:selectedDate', selectedDate.value);
   isVisibleCalendar.value = false;
   isMonth.value = false;
-  console.log('chooseDay selectedDate.value:',selectedDate.value)
+  // console.log('chooseDay selectedDate.value:',selectedDate.value)
 }
 onMounted(() => {
   // console.log("onMounted:", props.date)

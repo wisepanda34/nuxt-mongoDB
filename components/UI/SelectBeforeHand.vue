@@ -16,8 +16,6 @@ const determineDay = (i) =>{
   localSelectedDeadline.value = period[i]
   emit('update:modelValue', localSelectedDeadline.value);
   isOpen.value = false
-
-
 }
 </script>
 

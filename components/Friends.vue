@@ -14,6 +14,7 @@
             class="friends__item"
             v-for="(friend, index) in friends"
             :key="friend._id"
+            :class="{ soon: friend.soon }"
             @click="toggleInfo(index)"
         >
 
@@ -24,7 +25,7 @@
             <div class="friends__date">
               <p>{{convertDate(friend.birthday, monthsStore)}}</p>
             </div>
-            <div class="friends__date">
+            <div class="friends__old">
               <p>{{convertAge(friend.birthday)}}</p>
             </div>
           </div>
@@ -133,6 +134,9 @@ const currentDate = function() {
 }
 const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
+  if(openInfo.value){
+    closeEditMenu()
+  }
 };
 
 const openForm = ()=> {
@@ -218,7 +222,12 @@ const fetchDataFriends = async () => {
 
       const daysUntilBirthday = birthday.diff(today, 'days');
       friend.daysUntilBirthday = daysUntilBirthday >= 0 ? daysUntilBirthday : daysUntilBirthday + 365;
+
+      // Добавляем класс "soon", если день рождения близко
+      friend.soon = friend.daysUntilBirthday <= friend.beforehand;
     });
+
+
 
     // Сортируем массив по свойствам daysUntilBirthday, indexMonth и day
     data.sort((a, b) => {
@@ -368,7 +377,7 @@ const removeSubmitFriend = async (id) => {
     background: #fcd7d3;
     cursor: pointer;
   }
-  &__item-header{
+    &__item-header{
     display: grid;
     grid-template-columns: 1.2fr 1fr 0.5fr;
   }
@@ -418,6 +427,10 @@ const removeSubmitFriend = async (id) => {
       background: #fde7e7;
     }
   }
-
+}
+.soon p{
+  color: red;
+  font-weight: 500;
+  font-size: 17px;
 }
 </style>

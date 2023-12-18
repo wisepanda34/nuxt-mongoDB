@@ -20,7 +20,7 @@ const birthdaySchema = new mongoose.Schema({
     year: Number,
   },
   beforehand: {
-    type: String || Number
+    type: String
   }
 })
 //Compiling Schema
