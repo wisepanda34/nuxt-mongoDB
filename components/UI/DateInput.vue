@@ -44,7 +44,6 @@ const selectedDateCurrent = ref({ month: null, indexMonth: null, day: null, days
 const selectedDate = ref(null)
 const date = ref('')
 
-// const props = defineProps(['selectedDate']);
 const props = defineProps(['date']);
 const emit = defineEmits(['update:selectedDate']);
 
@@ -56,19 +55,17 @@ watch(selectedDate, () => {
   const num = selectedDateCurrent.value.day
   const month = selectedDateCurrent.value.month
   date.value = `${month} ${num}`
-  // console.log(num)
-  // console.log(month)
 })
 
 const chooseMonth = (month) => {
   selectedMonth.value = month.name
   selectedDateCurrent.value = { month: month.name, indexMonth: month.indexMonth, day: null, days: Array.from({ length: month.countDays }, (_, i) => i + 1) };
   isMonth.value = false;
-  // console.log( 'chooseMonth:', selectedDateCurrent.value.month)
+  console.log('selectedMonth.value: ',selectedMonth.value)
 }
 const chooseDay = (day) => {
   selectedDay.value = day
-  // console.log('day:', day)
+  console.log('selectedDay.value: ',selectedDay.value)
   selectedDateCurrent.value.day = day;
   const { indexMonth } = selectedDateCurrent.value
   selectedDate.value = {
@@ -78,19 +75,19 @@ const chooseDay = (day) => {
   emit('update:selectedDate', selectedDate.value);
   isVisibleCalendar.value = false;
   isMonth.value = false;
-  console.log(selectedDate.value)
+  console.log('chooseDay selectedDate.value:',selectedDate.value)
 }
 onMounted(() => {
   // console.log("onMounted:", props.date)
   if(props.date){
-    const foundMonth = monthsStore.months.find(item => item.indexMonth === props.date.month)
-    selectedDateCurrent.value = { month: foundMonth.name, indexMonth: foundMonth.indexMonth, day: props.date.day, days: foundMonth.countDays };
+    const foundMonth = monthsStore.months.find(item => item.indexMonth === props.date.indexMonth)
+    selectedDateCurrent.value = { month: foundMonth.name, indexMonth: props.date.indexMonth, day: props.date.day, days: foundMonth.countDays };
     // console.log("onMounted:", selectedDateCurrent.value)
     selectedDate.value = {
       day: selectedDateCurrent.value.day,
-      month: selectedDateCurrent.value.month
+      indexMonth: selectedDateCurrent.value.indexMonth
     }
-
+    // console.log('onMounted selectedDate.value:',selectedDate.value)
   }
 })
 </script>

@@ -1,11 +1,11 @@
 const convertAge = function (birthday) {
     try{
         const currentDate = new Date()
-        const  { day, month, year } = birthday
+        const  { day, indexMonth, year } = birthday
         if(!year) {
             return ''
         }else{
-            const friendBirthday = new Date(year, month - 1, day);
+            const friendBirthday = new Date(year, indexMonth - 1, day);
 
             // Вычисляем разницу в миллисекундах между текущей датой и днем рождения
             const ageInMilliseconds = currentDate - friendBirthday;

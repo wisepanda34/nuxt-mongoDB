@@ -16,7 +16,7 @@ const birthdaySchema = new mongoose.Schema({
   },
   birthday: {
     day: Number,
-    month: Number,
+    indexMonth: Number,
     year: Number,
   }
 })

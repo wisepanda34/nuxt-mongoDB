@@ -27,7 +27,7 @@
 
           <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
             <div v-if="openInfo===index" class="friends__box">
-              <p>{{ friend.info }} {{friend._id}}</p>
+              <p>{{ friend.info }} ---- id:{{friend._id}}</p>
               <div class="friends__edit" @click.stop="showEditMenu">
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
@@ -138,14 +138,13 @@ const updateDate = (newDate) => {
 };
 const updateYear = (newDate) => {
   year.value = newDate;
-  console.log( year.value)
 };
 
 const onSubmitFriend = async () => {
 
   try {
     const { day, indexMonth } = date.value
-    console.log(day, indexMonth)
+    console.log('onSubmitFriend:',day, indexMonth)
     if(!day || !indexMonth || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
@@ -160,7 +159,7 @@ const onSubmitFriend = async () => {
         surname: surname.value,
         birthday: {
           day: day,
-          month: indexMonth,
+          indexMonth: indexMonth,
           year: year.value
         },
         info: info.value,
@@ -171,7 +170,7 @@ const onSubmitFriend = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
 
     await fetchDataFriends()
@@ -191,7 +190,7 @@ const fetchDataFriends = async () => {
       return { data: null, error };
     }
     friends.value = data
-    // console.log(data)
+    // console.log('friends:',data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -220,6 +219,7 @@ const removeFriend = (id,index) => {
 const updateFriend = (index, id) => {
   updateProcess.value = true
   chosenFriend.value = friends.value.find( item => item._id === id) || null;
+  // console.log('chosenFriend.value:',chosenFriend.value)
 
   name.value = chosenFriend.value.name
   surname.value = chosenFriend.value.surname
@@ -227,20 +227,20 @@ const updateFriend = (index, id) => {
   year.value = chosenFriend.value.birthday.year
   date.value = {
     day: chosenFriend.value.birthday.day,
-    month: chosenFriend.value.birthday.month
+    indexMonth: chosenFriend.value.birthday.indexMonth
   }
-  console.log(date.value)
+  // console.log(date.value)
   closeEditMenu()
   toggleInfo(index)
   openForm()
 }
 const updateSubmitFriend = async () => {
   try {
-
-    // if(!_id || !day || !month || !name.value) {
-    //   console.log("Invalid Name or data from DateInput")
-    //   return
-    // }
+    console.log(chosenFriend.value._id, date.value.day, date.value.indexMonth, name.value)
+    if(!chosenFriend.value._id || !date.value.day || !date.value.indexMonth || !name.value) {
+      console.log("Invalid Name or data from DateInput")
+      return
+    }
     const dataUpdateFriend = {
       method: 'PUT',
       headers: {
@@ -252,7 +252,7 @@ const updateSubmitFriend = async () => {
         surname: surname.value,
         birthday: {
           day: date.value.day,
-          month: date.value.month,
+          indexMonth: date.value.indexMonth,
           year: year.value,
         },
         info: info.value,

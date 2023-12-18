@@ -1,10 +1,10 @@
 
 const convertDate = function (birthday, params) {
    try{
-       const  { day, month, year } = birthday
+       const  { day, indexMonth, year } = birthday
 
        if(year){
-           const friendBirthday = new Date( year, month-1, day )
+           const friendBirthday = new Date( year, indexMonth-1, day )
 
            // Получение названия месяца (полное название)
            const monthOptions = { month: "long"};
@@ -16,7 +16,7 @@ const convertDate = function (birthday, params) {
            return `${formattedMonth} ${formattedDay}`;
        }else{
            const formattedDay = day
-           const foundMonth = params.months.find( item => item.indexMonth === month )
+           const foundMonth = params.months.find(item => item.indexMonth === indexMonth)
 
             if(foundMonth) {
                 return `${foundMonth.name} ${formattedDay}`;
