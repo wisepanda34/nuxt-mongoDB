@@ -108,10 +108,7 @@ import convertAge from "~/utils/convertAge.js";
 import {useMonths} from "~/store/months.js";
 import moment from 'moment';
 
-const currentDate = function() {
-  const date = moment()
-  return date.format('dddd, MMMM D YYYY');
-}
+
 const monthsStore = useMonths()
 const friends = ref([])
 const chosenFriend = ref({})
@@ -121,14 +118,21 @@ const surname = ref('')
 const info = ref('actor')
 const date = ref(null)
 const year = ref(null)
-
+let updateProcess = ref(false)
+let openFormAddFriend = ref(false)
 let openInfo = ref(null)
+const isOpen = ref(false)
+
+
+
+const currentDate = function() {
+  const date = moment()
+  return date.format('dddd, MMMM D YYYY');
+}
 const toggleInfo = (index) => {
   openInfo.value = openInfo.value === index ? null : index;
 };
 
-let updateProcess = ref(false)
-let openFormAddFriend = ref(false)
 const openForm = ()=> {
   openFormAddFriend.value = true;
 }
@@ -154,7 +158,7 @@ const onSubmitFriend = async () => {
   try {
     const { day, indexMonth } = date.value
     console.log('onSubmitFriend:',day, indexMonth)
-    if(!day || !indexMonth || !name.value) {
+    if(!day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
     }
@@ -198,8 +202,34 @@ const fetchDataFriends = async () => {
       console.error("Ошибка при загрузке данных:", error);
       return { data: null, error };
     }
+
+    // Добавляем свойство daysUntilBirthday для каждого друга
+    data.forEach((friend) => {
+      const today = moment();
+      const birthday = moment({
+        year: today.year(),
+        month: friend.birthday.indexMonth,
+        day: friend.birthday.day
+      });
+
+      const daysUntilBirthday = birthday.diff(today, 'days');
+      friend.daysUntilBirthday = daysUntilBirthday >= 0 ? daysUntilBirthday : daysUntilBirthday + 365;
+    });
+
+    // Сортируем массив по свойствам daysUntilBirthday, indexMonth и day
+    data.sort((a, b) => {
+      if (a.daysUntilBirthday !== b.daysUntilBirthday) {
+        return a.daysUntilBirthday - b.daysUntilBirthday;
+      }
+      if (a.birthday.indexMonth !== b.birthday.indexMonth) {
+        return a.birthday.indexMonth - b.birthday.indexMonth;
+      }
+      return a.birthday.day - b.birthday.day;
+    });
+
+
     friends.value = data
-    // console.log('friends:',data)
+    console.log('friends:',data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -211,7 +241,6 @@ onMounted(()=>{
 })
 
 
-const isOpen = ref(false)
 const showEditMenu = () => {
   isOpen.value = true
 }
