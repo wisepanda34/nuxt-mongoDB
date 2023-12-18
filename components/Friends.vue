@@ -1,7 +1,11 @@
 <template>
   <div class="friends">
-    <Button v-if="!openFormAddFriend" text="Add friend" type="button" @click="openForm"/>
-    <Button v-if="openFormAddFriend" text="Close friend" type="button" @click="closeForm"/>
+    <div class="friends__heading">
+      <Button v-if="!openFormAddFriend" text="Add friend" type="button" @click="openForm"/>
+      <Button v-if="openFormAddFriend" text="Close friend" type="button" @click="closeForm"/>
+      <div>{{currentDate()}}</div>
+    </div>
+
 
     <div v-if="!openFormAddFriend" class="friends__info">
       <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
@@ -102,7 +106,12 @@ import TextAria from "~/components/UI/TextAria.vue";
 import convertDate from "~/utils/convertDate.js";
 import convertAge from "~/utils/convertAge.js";
 import {useMonths} from "~/store/months.js";
+import moment from 'moment';
 
+const currentDate = function() {
+  const date = moment()
+  return date.format('dddd, MMMM D YYYY');
+}
 const monthsStore = useMonths()
 const friends = ref([])
 const chosenFriend = ref({})
@@ -314,6 +323,10 @@ const removeSubmitFriend = async (id) => {
 <style scoped lang="scss">
 .friends{
   width: 100%;
+  &__heading{
+    display: flex;
+    justify-content: space-between;
+  }
   &__item{
     padding: 10px;
     margin: 10px 0;
