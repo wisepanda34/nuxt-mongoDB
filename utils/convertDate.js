@@ -4,7 +4,7 @@ const convertDate = function (birthday, params) {
        const  { day, indexMonth, year } = birthday
 
        if(year){
-           const friendBirthday = new Date( year, indexMonth-1, day )
+           const friendBirthday = new Date( year, indexMonth, day )
 
            // Получение названия месяца (полное название)
            const monthOptions = { month: "long"};

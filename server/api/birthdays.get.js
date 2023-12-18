@@ -1,18 +1,18 @@
-import birthdayModel from "~/server/models/Birthday.js"
+import birthdayModel from "@/server/models/Birthday.js";
 
 export default defineEventHandler( async ()=> {
   try{
     const currentDate = new Date();
-    const response = await birthdayModel.find()
+    const response = await birthdayModel.find();
     response.sort((a, b) => {
-      const dateA = new Date(currentDate.getFullYear(), a.birthday.month, a.birthday.day);
-      const dateB = new Date(currentDate.getFullYear(), b.birthday.month, b.birthday.day);
+      const dateA = new Date(currentDate.getFullYear(), a.birthday.indexMonth, a.birthday.day);
+      const dateB = new Date(currentDate.getFullYear(), b.birthday.indexMonth, b.birthday.day);
 
       // Сравниваем даты
       return dateA - dateB;
     });
-    return { birthdays: response }
+    return { birthdays: response };
   }catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
