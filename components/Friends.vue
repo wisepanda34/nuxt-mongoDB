@@ -52,7 +52,7 @@
 
     <div v-if="openFormAddFriend" class="friends__new">
       <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
-      <form class="friends__form" @submit.prevent="onSubmitFriend">
+      <form class="friends__form">
           <Input
               id="idName"
               textLabel="Name"
