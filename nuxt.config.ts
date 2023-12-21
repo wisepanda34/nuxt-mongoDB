@@ -7,7 +7,9 @@ export default defineNuxtConfig({
   modules: ['@pinia/nuxt', "@nuxt/image", '@morev/vue-transitions/nuxt'],
   css: [
     '~/assets/scss/_reset.scss',
+    '~/assets/scss/_text.scss',
+    '~/assets/scss/_variables.scss',
     '~/assets/scss/_general.scss',
-    '~/assets/scss/_transition.scss',
+    '~/assets/scss/_transition.scss'
   ]
 })

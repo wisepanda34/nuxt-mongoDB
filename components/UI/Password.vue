@@ -28,11 +28,11 @@ function sendModelValue(event) {
         class="input__field"
         @input="sendModelValue"
       >
-      <span v-if="!showPassword" @click="togglePasswordVisibility">
-        <img src="@/public/svg/eye.svg" alt="icon">
+      <span v-show="!showPassword" @click="togglePasswordVisibility">
+        <img src="/svg/eye.svg" alt="icon">
       </span>
-      <span v-if="showPassword" @click="togglePasswordVisibility">
-        <img src="@/public/svg/eye-slash.svg" alt="icon">
+      <span v-show="showPassword" @click="togglePasswordVisibility">
+        <img src="/svg/eye-slash.svg" alt="icon">
       </span>
     </div>
   </div>
