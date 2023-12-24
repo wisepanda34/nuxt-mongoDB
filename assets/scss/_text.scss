@@ -34,7 +34,7 @@ $grey-3: #b8bfca;
 $grey-4: #a8afc0;
 $grey-5: #9898a1;
 
-$green: #209d55;
+$green: #59b684;
 $green-1: #addac0;
 $green-2: #f4fff9;
 
@@ -58,34 +58,43 @@ $radius: 0.75rem;
   line-height: 1.2;
   color: $black;
 
-  &-fz12{
+  &--fz12{
     font-size: 12px;
   }
-  &-fz18{
+  &--fz13{
+    font-size: 13px;
+  }
+  &--fz14{
+    font-size: 14px;
+  }
+  &--fz16{
+    font-size: 16px;
+  }
+  &--fz18{
     font-size: 18px;
   }
-  &-fz20{
+  &--fz20{
     font-size: 20px;
   }
-  &-fz24{
+  &--fz24{
     font-size: 24px;
   }
-  &-fz30{
+  &--fz30{
     font-size: 30px;
   }
-  &-fz40{
+  &--fz40{
     font-size: 40px;
   }
-  &-fw500{
+  &--fw500{
     font-weight: 500;
   }
-  &-fw600{
+  &--fw600{
     font-weight: 600;
   }
-  &-fw700{
+  &--fw700{
     font-weight: 700;
   }
-  &-fw900{
+  &--fw900{
     font-weight: 900;
   }
 
@@ -170,7 +179,7 @@ $radius: 0.75rem;
     }
 
     &--fz13 {
-      font-size: 11px;
+      //font-size: 11px;
     }
   }
 }

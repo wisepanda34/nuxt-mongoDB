@@ -15,6 +15,10 @@
 .btn{
   width: 100px;
   height: 40px;
-  border: 1px solid #59b684;
+  border: 2px solid #59b684;
+  border-radius: 4px;
+  &:hover{
+    border: 2.5px solid #85e3b0;
+  }
 }
 </style>

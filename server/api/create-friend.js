@@ -16,19 +16,16 @@ export default defineEventHandler(async (event) => {
 
         await newFriend.save();
 
-
         return {
-            status: 200, // Успешный статус
+            status: 200,
             body: { message: 'Friend data received successfully' },
         };
     } catch (error) {
         console.error('Error:', error.message);
-
-        // Логирование ошибок в консоль
         console.error('Stack Trace:', error.stack);
 
         return {
-            status: 500, // Внутренняя ошибка сервера
+            status: 500,
             body: { error: 'Internal Server Error' },
         };
     }

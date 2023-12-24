@@ -1,17 +1,27 @@
 <!--Password.vue-->
 <script setup>
-const props = defineProps(['id', 'textLabel', 'placeholder', 'modelValue']);
+import { useVuelidate } from '@vuelidate/core'
+import {required, minLength} from "@vuelidate/validators";
+const props = defineProps(['id', 'textLabel', 'placeholder', 'modelValue', 'validationRules', "autocomplete"]);
 const emit = defineEmits(['update:modelValue']);
 const showPassword = ref(false);
+
+const v$ = useVuelidate({ modelValue: props.validationRules });
 
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 };
-function sendModelValue(event) {
+function updateModelValue(event) {
+  // v$.modelValue.$model = event.target.value;
+  // console.log(v$.modelValue.$error)
+
   emit("update:modelValue", event.target.value);
 }
 
+// onMounted(()=>{
+//   console.log(v$.value.$dirty)
+// })
 </script>
 
 <template>
@@ -26,7 +36,8 @@ function sendModelValue(event) {
         :value="modelValue"
         :placeholder="placeholder"
         class="input__field"
-        @input="sendModelValue"
+        :autocomplete="autocomplete"
+        @input="updateModelValue"
       >
       <span v-show="!showPassword" @click="togglePasswordVisibility">
         <img src="/svg/eye.svg" alt="icon">
@@ -34,6 +45,11 @@ function sendModelValue(event) {
       <span v-show="showPassword" @click="togglePasswordVisibility">
         <img src="/svg/eye-slash.svg" alt="icon">
       </span>
+    </div>
+    <div class="input__errors" v-if="!v$?.modelValue?.$pending">
+      <div class="error-msg text--red" v-if="!v$?.modelValue?.$pending && v$?.modelValue?.$error">
+        {{ v$?.modelValue?.$errors?.length ? v$?.modelValue?.$errors[0]?.$message : '' }}
+      </div>
     </div>
   </div>
 

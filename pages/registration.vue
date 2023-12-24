@@ -3,6 +3,9 @@
 import Input from "~/components/UI/Input.vue";
 import Password from "~/components/UI/Password.vue";
 import Button from "~/components/UI/Button.vue";
+import { useVuelidate } from '@vuelidate/core'
+import {required, minLength} from "@vuelidate/validators";
+import BaseModal from "~/components/modal/BaseModal.vue";
 
 definePageMeta({
   layout: 'custom'
@@ -10,42 +13,98 @@ definePageMeta({
 const email = ref('')
 const newPassword = ref('')
 const newPasswordRepeat = ref('')
-const handleRegister = () => {
+const errorText = ref('')
+const modalText = ref('')
 
+const validationRules  = {
+  email: { required },
+  newPassword: { required, minLength: minLength(4) },
+  newPasswordRepeat: { required, minLength: minLength(4) }
+}
+const handleRegister = async () => {
+  if(newPassword.value !== newPasswordRepeat.value){
+    console.log("Password mismatch")
+    return
+  }
+  try{
+    const newUser = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email.value,
+        password: newPassword.value
+      })
+    }
+    const response = await fetch('api/create-user', newUser)
+    const responseBody = await response.json();
+    if(response.status === 400){
+      console.log('response.body', responseBody);
+      console.log('response.body.error', responseBody.error);
+      errorText.value = responseBody.error;
+    }else if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    openModal('User was registrated!')
+
+    // console.log(`${response.status}`)
+
+    navigateTo('/login')
+
+  }catch (error) {
+    console.error('Error:', error.message);
+    console.log('Error:', error.message);
+  }
 }
 const cancelRegister = () => {
   navigateTo('/')
+}
+const openModal = (text) => {
+  modalText.value = text
+  setTimeout(()=>{
+    modalText.value = ''
+  }, 1000)
+}
+const updateModalText = (textNull) => {
+  modalText.value = textNull
 }
 </script>
 
 <template>
 <section class="registration">
-  <h1 class="text-center text-fz24">Please register</h1>
-  <form class="registration__form" @click.prevent="handleRegister">
+  <h1 class="text-center text--fz24">Please register</h1>
+  <form class="registration__form" @submit.prevent="handleRegister">
     <Input
       id="emailClient"
+      v-model.trim="email"
       textLabel="Email"
       type="text"
       placeholder="enter your email"
-      v-model.trim="email"
     />
+    <p>{{errorText}}</p>
     <Password
       id="passwordClient"
-      v-model="newPassword"
+      v-model.trim="newPassword"
       textLabel="Password"
-      placeholder="4 characters"
+      placeholder="min 4 characters"
+      :validationRules="validationRules.newPassword"
+      autocomplete="new-password"
       />
     <Password
       id="passwordRepeatClient"
       v-model.trim="newPasswordRepeat"
       textLabel="Repeat password"
-      placeholder="4 characters"
+      placeholder="min 4 characters"
+      :validationRules="validationRules.newPasswordRepeat"
+      autocomplete="new-password"
     />
     <div class="registration__buttons">
       <Button
         text="Register"
         type="submit"
         class="registration__btn"
+        :disabled="!newPassword || !newPasswordRepeat || !email"
       />
       <Button
         text="Cancel"
@@ -54,9 +113,11 @@ const cancelRegister = () => {
         @click.prevent="cancelRegister"
       />
     </div>
-
   </form>
-
+  <BaseModal
+    :modalText="modalText"
+    @update:modalText="updateModalText"
+  />
 </section>
 </template>
 

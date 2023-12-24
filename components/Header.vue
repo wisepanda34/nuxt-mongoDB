@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Logo from "~/components/global/Logo.vue";
+import Logo from "~/components/UI/Logo.vue";
 </script>
 
 <template>

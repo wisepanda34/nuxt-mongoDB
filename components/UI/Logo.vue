@@ -1,7 +1,7 @@
 <template>
-  <div class="logo flex-center">
+  <NuxtLink to="/" class="logo flex-center">
     <img src="/images/logo.jpg" alt="logo" />
-  </div>
+  </NuxtLink>
 </template>
 
 <style scoped lang="scss">

@@ -1,5 +1,8 @@
+@import '_variables.scss';
+@import '_text.scss';
 html,
 body{
+  font-family: "Roboto", sans-serif;
   height: 100%;
 }
 

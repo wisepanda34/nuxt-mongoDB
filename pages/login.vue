@@ -1,13 +1,128 @@
+<!--login.vue-->
 <script setup>
+import Password from "~/components/UI/Password.vue";
+import Button from "~/components/UI/Button.vue";
+import Input from "~/components/UI/Input.vue";
+import CheckBox from "~/components/UI/CheckBox.vue";
+
 definePageMeta({
   layout: 'custom'
 })
+
+const email = ref('')
+const password = ref('')
+const errorText = ref('')
+const forgotPassword = ref(false)
+const sentCode = ref(false)
+
+const handleLogin = async () => {
+  try{
+    console.log('handleLogin')
+
+
+
+  }catch (error) {
+    console.error('Error:', error.message);
+    console.log('Error:', error.message);
+  }
+}
+const cancelLogin = () => {
+  navigateTo('/')
+}
+const sendCode =()=>{
+  sentCode.value = true
+  console.log('sendCode')
+}
+
 </script>
 
 <template>
-login
+  <section class="registration">
+    <h1 class="text-center text--fz24">Please login</h1>
+    <form class="registration__form" @submit.prevent="handleLogin">
+      <Input
+        id="emailClient"
+        v-model.trim="email"
+        textLabel="Email"
+        type="text"
+        placeholder="enter your email"
+      />
+      <Password
+        id="passwordClient"
+        v-model.trim="password"
+        textLabel="Password"
+        placeholder="min 4 characters"
+        autocomplete="current-password"
+      />
+      <CheckBox v-model="forgotPassword"/>
+      <div v-show="forgotPassword && email" class="registration__send-code">
+        <p class="text--fz13">Will send code to <span @click.once="sendCode" class="text--blue-600 text--fz14 text--tdu">{{email}}</span>?</p>
+        <div v-if="sentCode" class="registration__put-code">
+          <input type="text" class="registration__input-code">
+          <p class="text--fz13">Put code</p>
+        </div>
+      </div>
+      <div class="registration__buttons">
+        <Button
+          text="Register"
+          type="submit"
+          class="registration__btn"
+          :disabled="!password || !email"
+        />
+        <Button
+          text="Cancel"
+          type="button"
+          class="registration__btn"
+          @click.prevent="cancelLogin"
+        />
+      </div>
+    </form>
+  </section>
 </template>
 
 <style scoped lang="scss">
+@import '@/assets/scss/_variables.scss';
+.registration{
 
+  &__form{
+    margin: 0 auto;
+    width: 400px;
+  }
+  &__buttons{
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 40px;
+  }
+  &__send-code{
+
+    margin-top: 15px;
+    span{
+      cursor: pointer;
+      &:hover{
+        color: #3a38e8;
+      }
+    }
+  }
+  &__put-code{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+
+  }
+  &__input-code{
+    width: 80px;
+    height: 25px;
+    border: 1px solid $grey-4;
+    border-radius: 3px;
+    padding: 0 12px;
+    &:hover{
+      border: 1px solid $grey-5;
+    }
+    &:focus{
+      border: 1px solid $grey;
+    }
+  }
+}
 </style>
