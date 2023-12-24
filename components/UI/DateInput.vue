@@ -1,3 +1,4 @@
+<!--DateInput.vue-->
 <template>
     <div class="date">
         <p>Date</p>
@@ -91,10 +92,6 @@ onMounted(() => {
   }
 })
 </script>
-
-
-
-
 
 <style scoped lang="scss">
 .date{

@@ -1,3 +1,14 @@
+<!--Input.vue-->
+<script setup>
+
+const { id, textLabel, type, placeholder, modelValue } = defineProps(['id', 'textLabel', 'type', 'placeholder', 'modelValue']);
+const emit = defineEmits(['update:modelValue']);
+
+const updateModelValue = (event) => {
+  emit('update:modelValue', event.target.value);
+};
+
+</script>
 <template>
   <div class="input">
     <div class="input__label">
@@ -18,17 +29,6 @@
 
   </div>
 </template>
-
-<script setup>
-
-const { id, textLabel, type, placeholder, modelValue } = defineProps(['id', 'textLabel', 'type', 'placeholder', 'modelValue']);
-const emit = defineEmits(['update:modelValue']);
-
-const updateModelValue = (event) => {
-  emit('update:modelValue', event.target.value);
-};
-
-</script>
 
 <style scoped lang="scss">
 @import "@/assets/scss/input.scss";
