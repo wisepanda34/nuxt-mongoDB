@@ -13,7 +13,6 @@ definePageMeta({
 const email = ref('')
 const newPassword = ref('')
 const newPasswordRepeat = ref('')
-const errorText = ref('')
 const modalText = ref('')
 
 const validationRules  = {
@@ -37,24 +36,28 @@ const handleRegister = async () => {
         password: newPassword.value
       })
     }
-    const response = await fetch('api/create-user', newUser)
+    const response = await fetch('api/registration', newUser)
     const responseBody = await response.json();
-    if(response.status === 400){
-      console.log('response.body', responseBody);
-      console.log('response.body.error', responseBody.error);
-      errorText.value = responseBody.error;
-    }else if(!response.ok){
+    // console.log(response)
+
+    if(!response.ok){
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    openModal('User was registrated!')
+    if(responseBody && responseBody.status === 400){
+      openModal(responseBody.body.error)
+      console.log('back.status === 400')
+      return
+    }
 
-    // console.log(`${response.status}`)
+    openModal(responseBody.body.message)
+    setTimeout(()=>{
+      navigateTo('/login')
+    },1000)
 
-    navigateTo('/login')
 
   }catch (error) {
-    console.error('Error:', error.message);
-    console.log('Error:', error.message);
+    //todo status
+   console.error('Error:', error.message);
   }
 }
 const cancelRegister = () => {
@@ -64,7 +67,7 @@ const openModal = (text) => {
   modalText.value = text
   setTimeout(()=>{
     modalText.value = ''
-  }, 1000)
+  }, 3000)
 }
 const updateModalText = (textNull) => {
   modalText.value = textNull
@@ -82,7 +85,6 @@ const updateModalText = (textNull) => {
       type="text"
       placeholder="enter your email"
     />
-    <p>{{errorText}}</p>
     <Password
       id="passwordClient"
       v-model.trim="newPassword"

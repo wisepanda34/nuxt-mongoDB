@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
 // Defining Schema
-const postSchema = new mongoose.Schema({
+const PostSchema = new Schema({
     title: { type: String, required: true, trim: true},
     body: { type: String, required: true, trim: true}
 })
 
 
 //Compiling Schema
-const PostModel = mongoose.model('bloges', postSchema)
+const PostModel = model('bloges', PostSchema)
 
 export default PostModel

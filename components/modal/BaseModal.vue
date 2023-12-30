@@ -11,7 +11,7 @@ const closeModal = () => {
 <template>
   <div v-if="modalText" class="modal" @click="closeModal">
     <div class="modal__white">
-      <p class="modal__text">
+      <p class="modal__text text--center">
         {{modalText}}
       </p>
     </div>

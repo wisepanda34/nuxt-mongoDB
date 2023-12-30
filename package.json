@@ -38,15 +38,18 @@
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vuepic/vue-datepicker": "^7.2.2",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7",
     "pinia": "^2.1.7",
     "postman": "^0.2.0",
     "sass": "^1.69.5",
-    "sass-loader": "^13.3.2"
+    "sass-loader": "^13.3.2",
+    "uuid": "^9.0.1"
   }
 }

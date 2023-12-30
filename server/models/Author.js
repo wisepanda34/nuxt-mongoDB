@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
 // Defining Schema
-const authorSchema = new mongoose.Schema({
+const AuthorSchema = new Schema({
     author: {
         name: {
             type: String,
@@ -18,6 +18,6 @@ const authorSchema = new mongoose.Schema({
 })
 
 //Compiling Schema
-const AuthorModel = mongoose.model('authors', authorSchema)
+const AuthorModel = model('authors', AuthorSchema)
 
 export default AuthorModel

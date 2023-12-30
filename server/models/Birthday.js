@@ -1,9 +1,10 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 // Defining Schema
-const birthdaySchema = new mongoose.Schema({
+const BirthdaySchema = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   surname: {
@@ -24,5 +25,5 @@ const birthdaySchema = new mongoose.Schema({
   }
 })
 //Compiling Schema
-const BirthdayModel = mongoose.model('birthdays', birthdaySchema)
+const BirthdayModel = model('birthdays', BirthdaySchema)
 export default BirthdayModel

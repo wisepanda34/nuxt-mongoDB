@@ -163,8 +163,6 @@ const onSubmitFriend = async () => {
 
   try {
     const { day, indexMonth } = date.value
-    console.log('onSubmitFriend:',day, indexMonth)
-    console.log('onSubmitFriend:',selectedDeadline.value)
     if(!day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
@@ -190,7 +188,7 @@ const onSubmitFriend = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
+    // const data = await response.json();
     // console.log(data);
 
 

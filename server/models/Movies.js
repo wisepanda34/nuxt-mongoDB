@@ -1,10 +1,10 @@
-import mongoose from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-const movieSchema = new mongoose.Schema({
+const MovieSchema = new Schema({
     title: String,
     "cinema studio": String
 })
 
-const movieModel = mongoose.model('movies', movieSchema)
+const movieModel = model('movies', MovieSchema)
 
 export default movieModel
