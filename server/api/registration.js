@@ -1,8 +1,8 @@
 // server/api/registration.js
 import UserModel from "../models/Users.js";
-import mailService from "../service/mail-service.js";
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
+import mailService from "../service/mail-service.js";
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
 
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (candidate) {
       return {
         status: 400,
-        body: { error: 'User with this email already exists' },
+        body: { error: `User with email ${email} already exists` },
       };
     }
     const hashPassword = await bcrypt.hash(password, 3)
@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
     //отправка ссылки активации на имейл пользователя
     // await mailService.sendActivationMail(email, activateLink)
 
+    //dto используем, чтобы не светить пароль
     // const userDto = createUserDto(newUser); // id, email, isActivated
 
     //генерируем токены
@@ -43,8 +44,7 @@ export default defineEventHandler(async (event) => {
     };
 
   }catch (error){
-    console.error('Error:', error.message);
-    console.log('Error:', error.message);
+    console.error('Error registration.js:', error.message);
     console.error('Stack Trace:', error.stack);
 
     return {

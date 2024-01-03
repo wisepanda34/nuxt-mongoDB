@@ -4,6 +4,7 @@ import Password from "~/components/UI/Password.vue";
 import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import CheckBox from "~/components/UI/CheckBox.vue";
+import BaseModal from "~/components/modal/BaseModal.vue";
 
 definePageMeta({
   layout: 'custom'
@@ -11,15 +12,28 @@ definePageMeta({
 
 const email = ref('')
 const password = ref('')
-const errorText = ref('')
 const forgotPassword = ref(false)
 const sentCode = ref(false)
+const modalText = ref('')
+
 
 const handleLogin = async () => {
   try{
-    console.log('handleLogin')
-
-
+    const data = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value
+      })
+    }
+    const response = await fetch('api/login', data)
+    if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const responseBody = await response.json();
+    console.log('responseBody: ', responseBody)
+    openModal(responseBody.body.message)
 
   }catch (error) {
     console.error('Error:', error.message);
@@ -33,7 +47,16 @@ const sendCode =()=>{
   sentCode.value = true
   console.log('sendCode')
 }
-
+const openModal = (text) => {
+  console.log('openModal: ', text)
+  modalText.value = text
+  // setTimeout(()=>{
+  //   modalText.value = ''
+  // }, 3000)
+}
+const updateModalText = (textNull) => {
+  modalText.value = textNull
+}
 </script>
 
 <template>
@@ -67,6 +90,7 @@ const sendCode =()=>{
           text="Register"
           type="submit"
           class="registration__btn"
+          :class="{'btn__disabled' : !password || !email}"
           :disabled="!password || !email"
         />
         <Button
@@ -77,6 +101,10 @@ const sendCode =()=>{
         />
       </div>
     </form>
+    <BaseModal
+      :modalText="modalText"
+      @update:modalText="updateModalText"
+    />
   </section>
 </template>
 

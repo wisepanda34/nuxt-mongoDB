@@ -4,7 +4,7 @@ import Input from "~/components/UI/Input.vue";
 import Password from "~/components/UI/Password.vue";
 import Button from "~/components/UI/Button.vue";
 import { useVuelidate } from '@vuelidate/core'
-import {required, minLength} from "@vuelidate/validators";
+import { required, minLength } from "@vuelidate/validators";
 import BaseModal from "~/components/modal/BaseModal.vue";
 
 definePageMeta({
@@ -16,10 +16,15 @@ const newPasswordRepeat = ref('')
 const modalText = ref('')
 
 const validationRules  = {
-  email: { required },
+  email: { email, required },
   newPassword: { required, minLength: minLength(4) },
   newPasswordRepeat: { required, minLength: minLength(4) }
 }
+// const v$ = useVuelidate()
+// onMounted(()=>{
+//   console.log('v$: ', v$)
+// })
+
 const handleRegister = async () => {
   if(newPassword.value !== newPasswordRepeat.value){
     console.log("Password mismatch")
@@ -28,9 +33,7 @@ const handleRegister = async () => {
   try{
     const newUser = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         email: email.value,
         password: newPassword.value
@@ -84,6 +87,7 @@ const updateModalText = (textNull) => {
       textLabel="Email"
       type="text"
       placeholder="enter your email"
+      :validationRules="validationRules.email"
     />
     <Password
       id="passwordClient"
@@ -106,8 +110,10 @@ const updateModalText = (textNull) => {
         text="Register"
         type="submit"
         class="registration__btn"
+        :class="{'btn__disabled' : !newPassword || !newPasswordRepeat || !email}"
         :disabled="!newPassword || !newPasswordRepeat || !email"
       />
+
       <Button
         text="Cancel"
         type="button"
@@ -136,4 +142,5 @@ const updateModalText = (textNull) => {
     margin-top: 40px;
   }
 }
+
 </style>

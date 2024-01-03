@@ -1,6 +1,7 @@
+//  server/service/mail-service.js
 import nodemailer from 'nodemailer'
 
-const MailService = ()=> {
+const MailService = (to, link)=> {
   const transporter = nodemailer.createTransport({
     host: '',
     port: '',
@@ -8,9 +9,9 @@ const MailService = ()=> {
     auth: {}
   })
 
-  //функция по отправки ссылки link на имейл to
+  //функция по отправке ссылки link на имейл to
   const sendActivationMail = async(to, link)=> {
-
+    console.log('sendActivationMail',to,link)
   }
 }
 export default MailService

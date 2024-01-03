@@ -32,7 +32,12 @@
 
           <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
             <div v-if="openInfo===index" class="friends__box">
-              <p>{{ friend.info }} ---- id:{{friend._id}} ----- {{friend.beforehand}}</p>
+              <div>
+                <p>{{ friend.info }} </p><br>
+<!--                <p>id:{{friend._id}}</p>-->
+                <p v-if="friend.beforehand !== 'none'">advise in {{friend.beforehand}} days </p>
+              </div>
+
               <div class="friends__edit" @click.stop="showEditMenu">
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
@@ -240,7 +245,7 @@ const fetchDataFriends = async () => {
 
 
     friends.value = data
-    console.log('friends:',data)
+    // console.log('friends:',data)
     return { data, error: null };
   } catch (error) {
     console.error("Ошибка в fetchDataFriends:", error);
@@ -285,8 +290,8 @@ const updateFriend = (index, id) => {
 }
 const updateSubmitFriend = async () => {
   try {
-    console.log('updateSubmitFriend:',selectedDeadline.value)
-    console.log(chosenFriend.value._id, date.value.day, date.value.indexMonth, name.value)
+    // console.log('updateSubmitFriend:',selectedDeadline.value)
+    // console.log(chosenFriend.value._id, date.value.day, date.value.indexMonth, name.value)
     if(!chosenFriend.value._id || !date.value.day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
@@ -309,7 +314,7 @@ const updateSubmitFriend = async () => {
         beforehand: selectedDeadline.value
       })
     }
-    console.log('dataUpdateFriend >> ', dataUpdateFriend)
+    // console.log('dataUpdateFriend >> ', dataUpdateFriend)
     const response = await fetch('/api/update-friend', dataUpdateFriend);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -402,6 +407,7 @@ const removeSubmitFriend = async (id) => {
   &__edit{
     position: relative;
     width: 30px;
+    height: 30px;
     border: 1px solid #fab023;
     padding: 4px;
     img{
