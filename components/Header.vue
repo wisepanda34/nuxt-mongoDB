@@ -2,8 +2,32 @@
 
 <script setup>
 import Logo from "~/components/UI/Logo.vue";
-const logOut = () => {
+import BaseModal from "~/components/modal/BaseModal.vue";
 
+const modalText = ref('')
+const logOut = async () => {
+  try{
+    const data = {
+      
+    }
+    const response = await fetch('api/logout', data)
+    const responseBody = await response.json();
+    console.log('responseBody: ', responseBody)
+
+    // openModal(responseBody.body.message)
+  }catch (error) {
+    console.log('Error:', error.message)
+  }
+}
+const openModal = (text) => {
+  console.log('openModal: ', text)
+  modalText.value = text
+  // setTimeout(()=>{
+  //   modalText.value = ''
+  // }, 3000)
+}
+const updateModalText = (textNull) => {
+  modalText.value = textNull
 }
 
 </script>
@@ -25,6 +49,10 @@ const logOut = () => {
       <span class="header__logout" @click="logOut">Log0ut</span>
       <nuxt-link to="/registration">registration</nuxt-link>
     </div>
+    <BaseModal
+      :modalText="modalText"
+      @update:modalText="updateModalText"
+    />
   </div>
 </template>
 
