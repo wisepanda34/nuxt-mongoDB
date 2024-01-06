@@ -11,5 +11,5 @@ export default defineNuxtConfig({
     '~/assets/scss/_variables.scss',
     '~/assets/scss/_transition.scss',
     '~/assets/scss/_general.scss'
-  ]
+  ],
 })

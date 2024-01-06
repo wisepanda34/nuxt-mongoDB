@@ -7,8 +7,7 @@ import createUserDto  from "../dtos/user-dto.js";
 export default defineEventHandler(async(event)=> {
   try{
     const { email, password } = await readBody(event);
-    const hashPassword = await bcrypt.hash(password, 3)
-    console.log('hashPassword: ', hashPassword)
+    // console.log('hashPassword: ', hashPassword)
     const findUser = await UserModel.findOne({email});
     if (!findUser) {
       return {
@@ -16,17 +15,27 @@ export default defineEventHandler(async(event)=> {
         body: { message: 'user entered incorrectly ((' },
       };
     }
+    // const hashPassword = await bcrypt.hash(password, 3)
     // Сравнение введенного пароля с хешем из базы данных
     const isPasswordValid = await bcrypt.compare(password, findUser.password);
     if (!isPasswordValid) {
       return {
         status: 400,
-        body: { message: 'Password entered incorrectly ((' },
+        body: { message: `Password entered incorrectly (( ` },
       };
     }
+    const userDto = createUserDto(findUser)
+    const tokens = tokenService.generateTokens({...userDto})
+    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
     return {
       status: 200,
-      body: { message: 'You have logged in successfully' },
+      body: {
+        id: findUser._id,
+        email: findUser.email,
+        role: findUser.role,
+        message: `You have logged in successfully`
+      },
     };
   } catch (error) {
     console.error('Error login.js:', error.message);

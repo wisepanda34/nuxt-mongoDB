@@ -5,6 +5,9 @@ import { v4 } from 'uuid';
 import mailService from "../service/mail-service.js";
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
+import cookieParser from "cookie-parser";
+// import {body} from 'express-validator'
+
 
 export default defineEventHandler(async (event) => {
   try{
@@ -22,31 +25,40 @@ export default defineEventHandler(async (event) => {
     const activateLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
 
     //сохраняем пользователя в БД
-    const newUser = await UserModel({ email, password: hashPassword, activateLink});
+    const newUser = await UserModel({ email, password: hashPassword, role: 'user', activateLink});
 
     //отправка ссылки активации на имейл пользователя
     // await mailService.sendActivationMail(email, activateLink)
 
     //dto используем, чтобы не светить пароль
-    // const userDto = createUserDto(newUser); // id, email, isActivated
+    const userDto = createUserDto(newUser); // id, email, isActivated
 
     //генерируем токены
-    // const tokens = tokenService.generateTokens({...userDto}, activateLink)
+    const tokens = tokenService.generateTokens({...userDto}, activateLink)
 
-    //сохраняем refreshToken в БД
-    // await tokenService.saveToken(userDto.id, tokens.refreshToken)
     await newUser.save();
-    // return {...tokens, user: userDto}
+    //сохраняем refreshToken в БД
+    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+
+    // устанавливаем куку refreshToken в ответе
+    const cookieOptions = {
+      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
+      httpOnly: true,
+    };
+    // создает подпись для значения куки с использованием заданного секретного ключа
+    const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
+    event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
 
     return {
       status: 200,
+      headers: event.headers,
       body: { message: 'Registration received successfully' },
     };
 
   }catch (error){
     console.error('Error registration.js:', error.message);
     console.error('Stack Trace:', error.stack);
-
     return {
       status: 500,
       body: { error: 'Internal Server Error' },

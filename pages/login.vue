@@ -33,6 +33,7 @@ const handleLogin = async () => {
     }
     const responseBody = await response.json();
     console.log('responseBody: ', responseBody)
+
     openModal(responseBody.body.message)
 
   }catch (error) {

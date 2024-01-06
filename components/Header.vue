@@ -1,6 +1,11 @@
-<script setup lang="ts">
+<!-- Header.vue-->
 
+<script setup>
 import Logo from "~/components/UI/Logo.vue";
+const logOut = () => {
+
+}
+
 </script>
 
 <template>
@@ -17,6 +22,7 @@ import Logo from "~/components/UI/Logo.vue";
 
     <div class="header__client">
       <nuxt-link to="/login">Login</nuxt-link>
+      <span class="header__logout" @click="logOut">Log0ut</span>
       <nuxt-link to="/registration">registration</nuxt-link>
     </div>
   </div>
@@ -58,8 +64,9 @@ import Logo from "~/components/UI/Logo.vue";
 
     font-size: 16px;
     color: darkslateblue;
-
-
+  }
+  &__logout{
+    cursor: pointer;
   }
 }
 </style>
