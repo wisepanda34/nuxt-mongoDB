@@ -5,7 +5,7 @@ import tokenModel  from '../models/Token.js'
 const TokenService = {
 
   generateTokens (payload){
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '180m'})
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '10m'})
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'})
     return {
       accessToken,
@@ -22,13 +22,18 @@ const TokenService = {
     }
   },
 
-  validateRefreshToken(token) {
+  validateRefreshToken(refreshToken) {
     try{
-      return  jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+      return jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
     }catch (error) {
       console.log(error)
       return null
     }
+  },
+
+  async findToken (refreshToken) {
+    const tokenData = await tokenModel.findOne({refreshToken})
+    return tokenData
   },
 
   async saveToken (userId, refreshToken) {
@@ -41,15 +46,10 @@ const TokenService = {
     return token
   },
 
-  async removeToken (refreshtoken) {
-    const tokenData = await tokenModel.deleteOne({refreshtoken})
+  async removeToken (refreshToken) {
+    const tokenData = await tokenModel.deleteOne({refreshToken})
     return tokenData
   },
-
-  async findToken (refreshtoken) {
-    const tokenData = await tokenModel.findOne({refreshtoken})
-    return tokenData
-  }
 }
 
 export default TokenService

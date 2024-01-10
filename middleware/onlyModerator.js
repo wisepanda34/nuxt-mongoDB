@@ -1,1 +1,1 @@
-// middleaware/onlyModerator.js
+// middleawares/onlyModerator.js

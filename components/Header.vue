@@ -4,6 +4,7 @@
 import Logo from "~/components/UI/Logo.vue";
 import BaseModal from "~/components/modal/BaseModal.vue";
 
+
 const modalText = ref('')
 const logOut = async () => {
   try{
@@ -45,9 +46,9 @@ const updateModalText = (textNull) => {
     </nav>
 
     <div class="header__client">
-      <nuxt-link to="/login">Login</nuxt-link>
-      <span class="header__logout" @click="logOut">Log0ut</span>
-      <nuxt-link to="/registration">registration</nuxt-link>
+      <nuxt-link v-if="!isAuth" to="/login">Login</nuxt-link>
+      <span v-if="isAuth" class="header__logout" @click="logOut">Log0ut</span>
+      <nuxt-link v-if="!isAuth" to="/registration">registration</nuxt-link>
     </div>
     <BaseModal
       :modalText="modalText"

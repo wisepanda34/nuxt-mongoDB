@@ -42,18 +42,20 @@ export default defineEventHandler(async (event) => {
 
 
     // устанавливаем куку refreshToken в ответе
-    const cookieOptions = {
-      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
-      httpOnly: true,
-    };
+    // const cookieOptions = {
+    //   maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
+    //   httpOnly: true,
+    // };
     // создает подпись для значения куки с использованием заданного секретного ключа
-    const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
-    event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
+    // const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
+    // console.log('refreshTokenCookie: ',refreshTokenCookie)
+    // event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
+    event.headers['Set-Cookie'] = `refreshToken=${tokens.accessToken}; accessToken=${tokens.refreshToken}`;
 
     return {
       status: 200,
-      headers: event.headers,
-      body: { message: 'Registration received successfully' },
+      // headers: event.headers,
+      body: { message: 'Registration received successfully', tokens },
     };
 
   }catch (error){

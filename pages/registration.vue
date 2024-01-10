@@ -6,6 +6,7 @@ import Button from "~/components/UI/Button.vue";
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from "@vuelidate/validators";
 import BaseModal from "~/components/modal/BaseModal.vue";
+import { body } from "express-validator";
 
 definePageMeta({
   layout: 'custom'
@@ -41,7 +42,7 @@ const handleRegister = async () => {
     }
     const response = await fetch('api/registration', newUser)
     const responseBody = await response.json();
-    // console.log(response)
+    console.log(responseBody)
 
     if(!response.ok){
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -51,7 +52,9 @@ const handleRegister = async () => {
       console.log('back.status === 400')
       return
     }
-
+    localStorage.setItem('access_token', responseBody.body.tokens.accessToken) 
+    localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
+ 
     openModal(responseBody.body.message)
     setTimeout(()=>{
       navigateTo('/login')

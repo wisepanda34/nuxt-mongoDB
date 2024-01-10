@@ -1,9 +1,11 @@
 // server/api/getAllUsers.js
 
 import UserModel from "~/server/models/Users.js";
+import authMiddleware from "~/server/middleawares/auth-middleware.js";
 
-export default defineEventHandler(async() => {
+export default defineEventHandler(async(ctx) => {
   try{
+    await  authMiddleware(ctx)
     return  await UserModel.find()
 
   }catch (error) {

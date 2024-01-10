@@ -6,7 +6,7 @@
   <div class="wrapper site">
     <Header/>
     <slot/>
-    <Footer/>
+    <Footer/> 
   </div>
 
 </template>

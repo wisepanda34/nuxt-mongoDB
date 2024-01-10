@@ -1,4 +1,4 @@
-// middleaware/onlyAdmin.js
+// middleawares/onlyAdmin.js
 
 // import { defineNuxtRouteMiddleware, navigateTo } from "nuxt/app";
 // import { useAuthStore } from "@/stores/auth";

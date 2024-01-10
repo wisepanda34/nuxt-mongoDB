@@ -34,7 +34,8 @@ export default defineEventHandler(async(event)=> {
         id: findUser._id,
         email: findUser.email,
         role: findUser.role,
-        message: `You have logged in successfully`
+        message: `You have logged in successfully`,
+        tokens: tokens
       },
     };
   } catch (error) {
