@@ -14,6 +14,7 @@ export default defineEventHandler(async(event)=> {
       }
     }
     const userData = await tokenService.validateRefreshToken(refreshToken)
+    console.log('/refresh userData: ', userData);
     // res.cookie('refreshToken', userData.refreshToken, {maxAge})
     const tokenFromDB = await tokenService.findToken(refreshToken)
     if(!userData || !tokenFromDB) {
@@ -22,15 +23,15 @@ export default defineEventHandler(async(event)=> {
        body:{ message: "User is not authorizated!"}
      }
     }
-    const findUser = await UserModel.findById(userData.id)
+    const findUser = await UserModel.findById(userData.id) 
     const userDto = createUserDto(findUser)
     const tokens = tokenService.generateTokens({...userDto})
+    //перезаписываем свежий refreshToken в БД
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {
       status: 200,
-      headers: event.headers,
-      body: { message: 'refreshToken is refreshed!' },
+      body: { message: 'refreshToken is refreshed!', tokens },
     };
   }catch (error) {
     console.error('Error registration.js:', error.message);

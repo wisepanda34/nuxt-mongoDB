@@ -5,13 +5,13 @@ import {} from "axios";
 
 const AuthService = {
   async login(email, password){
-    return $fetch('/login', {email, password})
+    return $fetch('api/login', {email, password})
   },
   async registration(email, password){
-    return $fetch('/registration', {email, password})
+    return $fetch('api/registration', {email, password})
   },
   async logout(){
-    return $fetch('/logout')
+    return $fetch('api/logout')
   }
 }
 export default AuthService

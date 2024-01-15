@@ -1,0 +1,38 @@
+// composables/useApi.js
+
+import { useAsyncData } from '#app';
+
+export const API_URL = 'http://localhost:5000/api';
+
+export const useApi = (path, options = {}) => {
+  const { data, pending, error, refresh } = useAsyncData(
+    async () => {
+      const response = await $fetch(path, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.status === 401 && !options._isRetry) {
+        options._isRetry = true; // Метка попытки повтора
+        try {
+          const refreshResponse = await $fetch(`${API_URL}/refresh`);
+          localStorage.setItem('token', refreshResponse.data.accessToken);
+          return useApi(path, options); // Повторный вызов с обновленным токеном
+        } catch (error) {
+          console.log('User is unauthorized');
+          throw error;
+        }
+      }
+
+      return response.data;
+    },
+    {
+      watch: [path, localStorage.getItem('token')],
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  return { data, pending, error, refresh };
+};

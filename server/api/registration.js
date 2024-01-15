@@ -2,10 +2,10 @@
 import UserModel from "../models/Users.js";
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
-import mailService from "../service/mail-service.js";
+import MailService from "../service/mail-service.js";
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 // import {body} from 'express-validator'
 
 
@@ -22,21 +22,25 @@ export default defineEventHandler(async (event) => {
     const hashPassword = await bcrypt.hash(password, 3)
 
     //уникальный идентификатор для активации учетной записи пользователя через его имэйл
-    const activateLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
+    const activationLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
 
     //сохраняем пользователя в БД
-    const newUser = await UserModel({ email, password: hashPassword, role: 'user', activateLink});
-
+    const newUser = await UserModel({ email, password: hashPassword, role: 'user', activationLink});
+    console.log("newUser:",newUser)
     //отправка ссылки активации на имейл пользователя
-    // await mailService.sendActivationMail(email, activateLink)
+    // console.log('MailService')
+    // await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`)
+    // await MailService.sendActivationMail(email, activationLink)
 
     //dto используем, чтобы не светить пароль
     const userDto = createUserDto(newUser); // id, email, isActivated
-
+    console.log("userDto: ", userDto);
     //генерируем токены
-    const tokens = tokenService.generateTokens({...userDto}, activateLink)
+    const tokens = tokenService.generateTokens({...userDto}, activationLink)
+    console.log("tokens: ", tokens);
 
     await newUser.save();
+    console.log("save newUser");
     //сохраняем refreshToken в БД
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
@@ -50,7 +54,7 @@ export default defineEventHandler(async (event) => {
     // const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
     // console.log('refreshTokenCookie: ',refreshTokenCookie)
     // event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
-    event.headers['Set-Cookie'] = `refreshToken=${tokens.accessToken}; accessToken=${tokens.refreshToken}`;
+    // event.headers['Set-Cookie'] = `refreshToken=${tokens.accessToken}; accessToken=${tokens.refreshToken}`;
 
     return {
       status: 200,

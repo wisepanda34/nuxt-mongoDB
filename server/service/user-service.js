@@ -32,22 +32,23 @@ const registration = async(email, password) => {
    const hashPassword = await bcrypt.hash(password, 3)
 
    //уникальный идентификатор для активации учетной записи пользователя через его имэйл
-   const activateLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
+   const activationLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
 
    //сохраняем пользователя в БД
-   const user = await UserModel({ email, password: hashPassword, activateLink});
+   const user = await UserModel.create({ email, password: hashPassword, activationLink});
 
    //отправка ссылки активации на имейл пользователя
-   // await MailService.sendActivationMail(email, activateLink)
+   await MailServicel(email, `${process.env.API_URL}/api/activate/${activationLink}`)
 
    //dto используем, чтобы не светить пароль
    const userDto = createUserDto(user); // id, email, isActivated
 
    //генерируем токены
-   const tokens = tokenService.generateTokens({...userDto}, activateLink)
+   const tokens = tokenService.generateTokens({...userDto}, activationLink)
 
    //сохраняем refreshToken в БД
    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+   
    return {...tokens, user: userDto}
  }catch (error) {
    next(error)
