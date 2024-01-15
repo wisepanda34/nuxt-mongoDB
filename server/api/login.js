@@ -3,11 +3,11 @@ import UserModel from "../models/Users.js";
 import bcrypt from 'bcrypt';
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
+import cookieParser from "cookie-parser";
 
 export default defineEventHandler(async(event)=> {
   try{
     const { email, password } = await readBody(event);
-    // console.log('hashPassword: ', hashPassword)
     const findUser = await UserModel.findOne({email});
     if (!findUser) {
       return {
@@ -15,27 +15,38 @@ export default defineEventHandler(async(event)=> {
         body: { message: 'user entered incorrectly ((' },
       };
     }
-    // const hashPassword = await bcrypt.hash(password, 3)
     // Сравнение введенного пароля с хешем из базы данных
     const isPasswordValid = await bcrypt.compare(password, findUser.password);
     if (!isPasswordValid) {
       return {
         status: 400,
-        body: { message: `Password entered incorrectly (( ` },
+        body: { message: 'Password entered incorrectly ((' },
       };
     }
-    const userDto = createUserDto(findUser)
+    const userDto = createUserDto(findUser)// id, email, isActivated
     const tokens = tokenService.generateTokens({...userDto})
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
+    // устанавливаем куку refreshToken в ответе
+    const cookieOptions = {
+      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
+      httpOnly: true,
+    };
+    // создает подпись для значения куки с использованием заданного секретного ключа
+    const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
+    event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
+    
     return {
       status: 200,
+      headers: event.headers,
       body: {
-        id: findUser._id,
-        email: findUser.email,
-        role: findUser.role,
-        message: `You have logged in successfully`,
-        tokens: tokens
+        user: {
+          id: findUser._id,
+          email: findUser.email,
+          role: findUser.role
+        },
+        message: 'You have logged in successfully',
+        token: tokens.accessToken
       },
     };
   } catch (error) {

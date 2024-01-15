@@ -1,36 +1,31 @@
 <script setup>
 
-const { data: posts, error } = await useFetch("/api/posts")
+// const { data: posts, error } = await useFetch("/api/posts")
 
 </script>
 
 <template>
-  <div class="home">
-    <News class="home__news" :posts="posts" :error="error"/>
-    <Main class="home__main"/>
+  <div class="hello">
+    <h1 class="hello__title text-center">Hello, everyone!</h1>
+    <p class="hello__descr">This application was created so that every person could congratulate all their family and friends on their birthday, and not after a couple of days, as is often the case. This application was created so that every person could congratulate all their family and friends on their birthday, and not after a couple of days, as is often the case. Therefore, use the <span>Congratulate your friends</span> to the fullest! </p>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.home{
-  display: grid;
-  grid-template-columns: 250px auto;
-  gap: 20px;
-}
-@media (max-width: 1024px) {
-  .home{
-    grid-template-columns: 200px auto;
+<style scoped lang="scss">
+.hello{
+  &__title{
+    margin: 30px 0;
+    font-weight: 900;
+    font-size: 30px;
+    color: rgb(75, 174, 141);
   }
-}
-@media (max-width: 767px) {
-  .home{
-    grid-template-columns: auto;
-    &__news{
-      order: 2
-    }
-    &__main{
-      order: 1
-    }
+  &__descr{
+    padding: 20px;
+    line-height: 170%;
+    font-size: 20px;
+    color: rgb(165, 133, 91);
+    text-indent: 40px;
+    
   }
 }
 </style>

@@ -5,6 +5,8 @@ import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import CheckBox from "~/components/UI/CheckBox.vue";
 import BaseModal from "~/components/modal/BaseModal.vue";
+import { useAuth } from "@/store/auth";
+
 
 definePageMeta({
   layout: 'custom'
@@ -15,7 +17,7 @@ const password = ref('')
 const forgotPassword = ref(false)
 const sentCode = ref(false)
 const modalText = ref('')
-
+const authStore = useAuth()
 
 const handleLogin = async () => {
   try{
@@ -32,9 +34,14 @@ const handleLogin = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseBody = await response.json();
-    console.log('responseBody: ', responseBody)
-
+    console.log('responseBody.body.user:', responseBody.body.user);
+    authStore.login(responseBody.body.user)
+    localStorage.setItem('access_token', responseBody.body.token) 
+    // localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
     openModal(responseBody.body.message)
+    setTimeout(()=>{
+      navigateTo('/home')
+    },2000)
 
   }catch (error) {
     console.error('Error:', error.message);
@@ -51,9 +58,9 @@ const sendCode =()=>{
 const openModal = (text) => {
   console.log('openModal: ', text)
   modalText.value = text
-  // setTimeout(()=>{
-  //   modalText.value = ''
-  // }, 3000)
+  setTimeout(()=>{
+    modalText.value = ''
+  }, 2000)
 }
 const updateModalText = (textNull) => {
   modalText.value = textNull
@@ -88,7 +95,7 @@ const updateModalText = (textNull) => {
       </div>
       <div class="registration__buttons">
         <Button
-          text="Register"
+          text="Login"
           type="submit"
           class="registration__btn"
           :class="{'btn__disabled' : !password || !email}"

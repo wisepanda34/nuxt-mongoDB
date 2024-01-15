@@ -3,9 +3,9 @@
 <script setup>
 import Logo from "~/components/UI/Logo.vue";
 import BaseModal from "~/components/modal/BaseModal.vue";
-// import {useAuth} from "~/store/auth.js"
+import {useAuth} from "~/store/auth.js"
 
-// const auth = useAuthStore()
+const authStore = useAuth()
 const modalText = ref('')
 const logOut = async () => {
   try{
@@ -14,9 +14,14 @@ const logOut = async () => {
     }
     const response = await fetch('api/logout', data)
     const responseBody = await response.json();
-    console.log('responseBody: ', responseBody)
-
+    authStore.logout()
+    localStorage.removeItem('access_token')
     // openModal(responseBody.body.message)
+    console.log(responseBody);
+    setTimeout(()=>{
+      // modalText.value = ''
+      navigateTo('/')
+    },2000)
   }catch (error) {
     console.log('Error:', error.message)
   }
@@ -24,9 +29,9 @@ const logOut = async () => {
 const openModal = (text) => {
   console.log('openModal: ', text)
   modalText.value = text
-  // setTimeout(()=>{
-  //   modalText.value = ''
-  // }, 3000)
+  setTimeout(()=>{
+    modalText.value = ''
+  }, 2000)
 }
 const updateModalText = (textNull) => {
   modalText.value = textNull
@@ -40,21 +45,22 @@ const updateModalText = (textNull) => {
     <Logo/>
 
     <nav class="header__nav">
-      <nuxt-link to="/">Home</nuxt-link>
+      <nuxt-link to="/home">Home</nuxt-link>
       <nuxt-link to="/books">Books</nuxt-link>
       <nuxt-link to="/authors">Authors</nuxt-link>
       <nuxt-link to="/weather">Weather</nuxt-link>
     </nav>
 
     <div class="header__client">
-      <nuxt-link   to="/login">Login</nuxt-link>
-      <span  class="header__logout" @click="logOut">Log0ut</span>
-      <nuxt-link  to="/registration">registration</nuxt-link>
+      <nuxt-link v-if="!authStore.isAuth"  to="/login">Login</nuxt-link>
+      <span v-if="authStore.isAuth" class="header__email">{{ authStore.user.email }}</span>
+      <span v-if="authStore.isAuth" class="header__logout" @click="logOut">Logout</span>
+      <nuxt-link v-if="!authStore.isAuth"   to="/registration">registration</nuxt-link>
     </div>
-    <BaseModal
+    <!-- <BaseModal
       :modalText="modalText"
       @update:modalText="updateModalText"
-    />
+    /> -->
   </div>
 </template>
 
@@ -97,6 +103,9 @@ const updateModalText = (textNull) => {
   }
   &__logout{
     cursor: pointer;
+  }
+  &__email{
+    color: rgb(199, 166, 35);
   }
 }
 </style>

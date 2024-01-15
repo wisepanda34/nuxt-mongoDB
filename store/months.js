@@ -1,3 +1,4 @@
+// store/month.js
 import { defineStore } from "pinia";
 export const useMonths = defineStore('months', {
     state: ()=> ({

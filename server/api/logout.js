@@ -1,17 +1,19 @@
 // server/api/logout.js
 
 import tokenService from "~/server/service/token-service.js";
+import cookieParser from "cookie-parser";
 
 export default defineEventHandler(async(event)=> {
   try{
-    const { refreshToken } = await readBody(event)
-    const tokenData = await tokenService.removeToken(refreshToken)
-    // res.clearCookie('refreshToken')
-    // return  res.json(token)
+    // console.log('event.node.req.cookies:',event.node.req.cookies);
+    // const refreshToken = event.node.req.cookies.get('refreshToken') //достаем из куки рефрештокен
+    // console.log('refreshToken:',refreshToken);
+    // event.node.res.clearCookie('refreshToken') //удаление рефрештокена из куки
+    // const tokenData = await tokenService.removeToken(refreshToken)
+    // console.log("tokenData:", tokenData);  
     return {
       status: 200,
-      // headers: event.headers,
-      body: { message: 'RefreshToken is destroyed!' },
+      body: { message: 'User is out!' },
     };
   }catch (error) {
     console.error('Error login.js:', error.message);

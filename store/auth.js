@@ -2,7 +2,6 @@
 
 import { defineStore } from 'pinia'
 import AuthService from '~/services/AuthService.js'
-import {state} from "@nuxt/devtools/dist/runtime/plugins/view/state.js";
 
 export const useAuth = defineStore('authStore', {
   state: () => ({
@@ -13,16 +12,13 @@ export const useAuth = defineStore('authStore', {
     return state.isAuth
   },
   actions: {
-    async login(email, password) {
-      try{
-        const response = await AuthService.login(email, password)
-        localStorage.setItem('token', response.data.accessToken)
-        this.state.isAuth = true
-        this.user = response.data.user
-      }catch (e) {
-        console.log('useAuth login error:', e)
-        console.log('useAuth login error:', e.response?.data?.message)
-      }
+    login(user){
+      this.isAuth = true
+      this.user = user
+    },
+    logout(){
+      this.isAuth = false
+      this.user = {}
     },
     async registration(email, password) {
       try{
@@ -35,7 +31,20 @@ export const useAuth = defineStore('authStore', {
         console.log('useAuth login error:', e.response?.data?.message)
       }
     },
-    async logout() {
+
+    async logIn(email, password) {
+      try{
+        const response = await AuthService.login(email, password)
+        localStorage.setItem('token', response.data.accessToken)
+        this.state.isAuth = true
+        this.user = response.data.user
+      }catch (e) {
+        console.log('useAuth login error:', e)
+        console.log('useAuth login error:', e.response?.data?.message)
+      }
+    },
+   
+    async logOut() {
       try{
         const response = await AuthService.logout()
         localStorage.removeItem('token')

@@ -25,10 +25,11 @@ export default defineEventHandler(async (event) => {
     const activationLink = v4() //af914236-e488-47fb-925e-c3fb6c762f0b
 
     //сохраняем пользователя в БД
-    const newUser = await UserModel({ email, password: hashPassword, role: 'user', activationLink});
+    const newUser = await UserModel({ email, password: hashPassword, role: 'user'});
     console.log("newUser:",newUser)
     //отправка ссылки активации на имейл пользователя
     // console.log('MailService')
+    const path = `${process.env.API_URL}/api/activate/${activationLink}`
     // await MailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`)
     // await MailService.sendActivationMail(email, activationLink)
 
@@ -36,30 +37,18 @@ export default defineEventHandler(async (event) => {
     const userDto = createUserDto(newUser); // id, email, isActivated
     console.log("userDto: ", userDto);
     //генерируем токены
-    const tokens = tokenService.generateTokens({...userDto}, activationLink)
-    console.log("tokens: ", tokens);
+    // const tokens = tokenService.generateTokens({...userDto})
+    // console.log("tokens: ", tokens);
 
     await newUser.save();
-    console.log("save newUser");
+    // console.log("save newUser");
     //сохраняем refreshToken в БД
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    // await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-
-    // устанавливаем куку refreshToken в ответе
-    // const cookieOptions = {
-    //   maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
-    //   httpOnly: true,
-    // };
-    // создает подпись для значения куки с использованием заданного секретного ключа
-    // const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
-    // console.log('refreshTokenCookie: ',refreshTokenCookie)
-    // event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
-    // event.headers['Set-Cookie'] = `refreshToken=${tokens.accessToken}; accessToken=${tokens.refreshToken}`;
 
     return {
       status: 200,
-      // headers: event.headers,
-      body: { message: 'Registration received successfully', tokens },
+      body: { message: 'Registration received successfully'},
     };
 
   }catch (error){

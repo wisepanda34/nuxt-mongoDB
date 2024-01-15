@@ -22,9 +22,9 @@
   }
   &__disabled{
     cursor: none;
-    border: 2px solid #b0d9bb;
-    background: #f3f3f3;
-    color: #9f9d9d;
+    border: 2px solid #8dd3ae;
+    // background: #f3f3f3;
+    color: #5c5c5c;
 
     &:hover {
       border: 2px solid #b0d9bb;

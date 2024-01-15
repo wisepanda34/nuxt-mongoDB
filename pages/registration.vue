@@ -7,6 +7,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, minLength } from "@vuelidate/validators";
 import BaseModal from "~/components/modal/BaseModal.vue";
 import { body } from "express-validator";
+import { useAuth } from "@/store/auth";
 
 definePageMeta({
   layout: 'custom'
@@ -15,6 +16,7 @@ const email = ref('')
 const newPassword = ref('')
 const newPasswordRepeat = ref('')
 const modalText = ref('')
+const authStore = useAuth()
 
 const validationRules  = {
   email: { email, required },
@@ -52,8 +54,9 @@ const handleRegister = async () => {
       console.log('back.status === 400')
       return
     }
-    localStorage.setItem('access_token', responseBody.body.tokens.accessToken) 
-    localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
+    // localStorage.setItem('access_token', responseBody.body.tokens.accessToken) 
+    // localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
+    
  
     openModal(responseBody.body.message)
     setTimeout(()=>{
