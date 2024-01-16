@@ -5,12 +5,16 @@ import cookieParser from "cookie-parser";
 
 export default defineEventHandler(async(event)=> {
   try{
-    // console.log('event.node.req.cookies:',event.node.req.cookies);
-    // const refreshToken = event.node.req.cookies.get('refreshToken') //достаем из куки рефрештокен
-    // console.log('refreshToken:',refreshToken);
-    // event.node.res.clearCookie('refreshToken') //удаление рефрештокена из куки
-    // const tokenData = await tokenService.removeToken(refreshToken)
-    // console.log("tokenData:", tokenData);  
+    let refreshToken = getCookie(event, 'refreshToken')
+    let easyToken = getCookie(event, 'easyToken')
+    const removeToken = await tokenService.removeToken(easyToken)
+    setCookie(event, 'refreshToken', '',{
+      maxAge: -1,
+      httpOnly: true,
+    })
+    setCookie(event, 'easyToken', '',{
+      maxAge: -1,
+    })
     return {
       status: 200,
       body: { message: 'User is out!' },

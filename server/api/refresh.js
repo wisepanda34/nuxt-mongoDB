@@ -3,10 +3,11 @@
 import tokenService from "~/server/service/token-service.js";
 import createUserDto from "~/server/dtos/user-dto.js";
 import UserModel from "~/server/models/Users.js";
+import cookieParser from "cookie-parser";
 
 export default defineEventHandler(async(event)=> {
   try{
-    const { refreshToken } = await readBody(event)
+    let refreshToken = getCookie(event, 'easyToken')
     if(!refreshToken) {
       return {
         status: 400,
@@ -15,7 +16,6 @@ export default defineEventHandler(async(event)=> {
     }
     const userData = await tokenService.validateRefreshToken(refreshToken)
     console.log('/refresh userData: ', userData);
-    // res.cookie('refreshToken', userData.refreshToken, {maxAge})
     const tokenFromDB = await tokenService.findToken(refreshToken)
     if(!userData || !tokenFromDB) {
      return {
@@ -29,9 +29,20 @@ export default defineEventHandler(async(event)=> {
     //перезаписываем свежий refreshToken в БД
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
+    // устанавливаем куку refreshToken в ответе
+    const cookieOptions = {
+      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
+      httpOnly: true,
+    };
+    // создает подпись для значения куки с использованием заданного секретного ключа
+    const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
+    const newRefreshToken = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
+    setCookie(event, 'refreshToken', newRefreshToken)
+    setCookie(event, 'easyToken', tokens.refreshToken)
+
     return {
       status: 200,
-      body: { message: 'refreshToken is refreshed!', tokens },
+      body: { message: 'refreshToken is refreshed!', accessToken: tokens.accessToken},
     };
   }catch (error) {
     console.error('Error registration.js:', error.message);

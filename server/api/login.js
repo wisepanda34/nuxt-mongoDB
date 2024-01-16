@@ -34,11 +34,13 @@ export default defineEventHandler(async(event)=> {
     };
     // создает подпись для значения куки с использованием заданного секретного ключа
     const refreshTokenCookie = cookieParser.signedCookie('refreshToken', tokens.refreshToken, process.env.JWT_REFRESH_SECRET);
-    event.headers['Set-Cookie'] = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
-    
+    const refreshToken = `refreshToken=${refreshTokenCookie}; ${Object.entries(cookieOptions).map(([key, value]) => `${key}=${value}`).join('; ')}`;
+    setCookie(event, 'refreshToken', refreshToken)
+    setCookie(event, 'easyToken', tokens.refreshToken)
+
+   
     return {
       status: 200,
-      headers: event.headers,
       body: {
         user: {
           id: findUser._id,
@@ -46,7 +48,7 @@ export default defineEventHandler(async(event)=> {
           role: findUser.role
         },
         message: 'You have logged in successfully',
-        token: tokens.accessToken
+        accessToken: tokens.accessToken
       },
     };
   } catch (error) {

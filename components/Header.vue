@@ -2,45 +2,28 @@
 
 <script setup>
 import Logo from "~/components/UI/Logo.vue";
-import BaseModal from "~/components/modal/BaseModal.vue";
 import {useAuth} from "~/store/auth.js"
 
 const authStore = useAuth()
-const modalText = ref('')
 const logOut = async () => {
   try{
-    const data = {
-      
-    }
-    const response = await fetch('api/logout', data)
-    const responseBody = await response.json();
-    authStore.logout()
-    localStorage.removeItem('access_token')
-    // openModal(responseBody.body.message)
-    console.log(responseBody);
-    setTimeout(()=>{
-      // modalText.value = ''
-      navigateTo('/')
-    },2000)
+    await fetch('api/logout')
+    
   }catch (error) {
     console.log('Error:', error.message)
+  }finally{
+    authStore.logout()
+    localStorage.removeItem('access_token')
+    setTimeout(()=>{
+      navigateTo('/')
+    },500)
   }
-}
-const openModal = (text) => {
-  console.log('openModal: ', text)
-  modalText.value = text
-  setTimeout(()=>{
-    modalText.value = ''
-  }, 2000)
-}
-const updateModalText = (textNull) => {
-  modalText.value = textNull
 }
 
 </script>
 
 <template>
-  <div class="header flex">
+  <div class="header">
 
     <Logo/>
 
@@ -57,10 +40,6 @@ const updateModalText = (textNull) => {
       <span v-if="authStore.isAuth" class="header__logout" @click="logOut">Logout</span>
       <nuxt-link v-if="!authStore.isAuth"   to="/registration">registration</nuxt-link>
     </div>
-    <!-- <BaseModal
-      :modalText="modalText"
-      @update:modalText="updateModalText"
-    /> -->
   </div>
 </template>
 
