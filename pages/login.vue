@@ -36,8 +36,7 @@ const handleLogin = async () => {
     const responseBody = await response.json();
     console.log('responseBody.body.user:', responseBody.body.user);
     authStore.login(responseBody.body.user)
-    localStorage.setItem('access_token', responseBody.body.token) 
-    // localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
+    localStorage.setItem('access_token', responseBody.body.accessToken) 
     openModal(responseBody.body.message)
     setTimeout(()=>{
       navigateTo('/home')

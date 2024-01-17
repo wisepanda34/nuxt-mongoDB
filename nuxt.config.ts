@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     dbUrl: process.env.DATABASE_URL,
   },
   modules: ['@pinia/nuxt', "@nuxt/image", '@morev/vue-transitions/nuxt'],
-
+ 
   css: [
     '~/assets/scss/_reset.scss',
     '~/assets/scss/_text.scss',

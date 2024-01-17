@@ -8,9 +8,13 @@ export const useAuth = defineStore('authStore', {
     user: {},
     isAuth: false
   }),
-  getIsAuth(){
-    return state.isAuth
+  
+  getters:{
+    getIsAuth(state){
+      return state.isAuth
+    },
   },
+  
   actions: {
     login(user){
       this.isAuth = true
@@ -20,6 +24,7 @@ export const useAuth = defineStore('authStore', {
       this.isAuth = false
       this.user = {}
     },
+
     async registration(email, password) {
       try{
         const response = await AuthService.registration(email, password)
@@ -57,7 +62,7 @@ export const useAuth = defineStore('authStore', {
       }
     },
   
-    async checkAuth() {
+    async checkAuth1() {
       try{
         const response = await fetch('/refresh')
         localStorage.setItem('token', response.data.accessToken)
