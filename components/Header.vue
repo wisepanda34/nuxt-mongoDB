@@ -28,7 +28,7 @@ const logOut = async () => {
     <Logo/>
 
     <nav class="header__nav">
-      <nuxt-link to="/home">Home</nuxt-link>
+      <nuxt-link to="/friends">Friends</nuxt-link>
       <nuxt-link to="/books">Books</nuxt-link>
       <nuxt-link to="/authors">Authors</nuxt-link>
       <nuxt-link to="/weather">Weather</nuxt-link>
@@ -36,7 +36,7 @@ const logOut = async () => {
 
     <div class="header__client">
       <nuxt-link v-if="!authStore.isAuth"  to="/login">Login</nuxt-link>
-      <span v-if="authStore.isAuth" class="header__email">{{ authStore.user.email }}</span>
+      <nuxt-link v-if="authStore.isAuth" to="/profile" class="header__email">{{ authStore.user.email }}</nuxt-link>
       <span v-if="authStore.isAuth" class="header__logout" @click="logOut">Logout</span>
       <nuxt-link v-if="!authStore.isAuth"   to="/registration">registration</nuxt-link>
     </div>

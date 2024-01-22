@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-
+<script setup>
 
 </script>
 
@@ -8,6 +6,3 @@
   <Books/>
 </template>
 
-<style scoped lang="scss">
-
-</style>

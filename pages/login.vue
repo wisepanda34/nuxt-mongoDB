@@ -12,8 +12,8 @@ definePageMeta({
   layout: 'custom'
 })
 
-const email = ref('')
-const password = ref('')
+const email = ref('bob@mail.qwqw')
+const password = ref('qwqw')
 const forgotPassword = ref(false)
 const sentCode = ref(false)
 const modalText = ref('')
@@ -34,16 +34,15 @@ const handleLogin = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseBody = await response.json();
-    console.log('responseBody.body.user:', responseBody.body.user);
+    // console.log('responseBody.body.user:', responseBody.body.user);
     authStore.login(responseBody.body.user)
     localStorage.setItem('access_token', responseBody.body.accessToken) 
     openModal(responseBody.body.message)
     setTimeout(()=>{
-      navigateTo('/home')
+      navigateTo('/books')
     },2000)
 
   }catch (error) {
-    console.error('Error:', error.message);
     console.log('Error:', error.message);
   }
 }
@@ -55,7 +54,6 @@ const sendCode =()=>{
   console.log('sendCode')
 }
 const openModal = (text) => {
-  console.log('openModal: ', text)
   modalText.value = text
   setTimeout(()=>{
     modalText.value = ''

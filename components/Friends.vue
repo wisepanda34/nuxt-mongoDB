@@ -34,7 +34,6 @@
             <div v-if="openInfo===index" class="friends__box">
               <div>
                 <p>{{ friend.info }} </p><br>
-<!--                <p>id:{{friend._id}}</p>-->
                 <p v-if="friend.beforehand !== 'none'">advise in {{friend.beforehand}} days </p>
               </div>
 
@@ -115,7 +114,9 @@ import convertAge from "~/utils/convertAge.js";
 import {useMonths} from "~/store/months.js";
 import moment from 'moment';
 import SelectBeforeHand from "~/components/UI/SelectBeforeHand.vue";
-
+import $api from "~/http";
+import axios from "axios";
+// import { body } from "express-validator";
 
 const monthsStore = useMonths()
 const friends = ref([])
@@ -205,57 +206,98 @@ const onSubmitFriend = async () => {
     console.log('Error:', error.message);
   }
 };
+
+
+
+// while (true) { // Цикл для повторных попыток с обновленным токеном
+    //   console.log('while');
+      
+    //   const result = await fetch("/api/birthdays", {
+    //     headers: {
+    //       'Authorization': `${accessToken}`
+    //     },
+    //     retryOnStatus: [401],
+    //     onRetry: async () => {
+    //       console.log('start onRetry');
+          
+    //       const refreshResult = await fetch('/api/refresh');
+    //       console.log('refreshResult');
+
+    //       const refreshResultJson = await refreshResult.json();
+    //       console.log('refreshResultJson:',refreshResultJson);
+          
+    //       if(refreshResultJson.status == 402){
+    //         console.log('status 401:', body.message);
+    //         navigateTo('/login')
+    //       } else if(refreshResultJson.status == 400){
+    //         console.log('status 400:', body.message);
+    //         navigateTo('/login')
+    //       } else if(refreshResultJson.status == 200){
+    //         let accessToken = refreshResultJson.body.accessToken
+    //         if (accessToken) {
+    //           localStorage.setItem('access_token', accessToken)
+    //           console.log('accessToken:', accessToken);
+    //         }
+    //       }
+    //     }
+    //   });
+
+    //   if (result.ok) {
+    //     break;
+    //   }
+    // }
+//  =================================================================
 const fetchDataFriends = async () => {
   try {
-    const result = await fetch("/api/birthdays");
-    const { birthdays: data, error } = await result.json();
-    if (error) {
-      console.error("Ошибка при загрузке данных:", error);
-      return { data: null, error };
+    const response = await $api.get(`api/birthdays`)
+    console.log('response:', response);
+    if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
-    // Добавляем свойство daysUntilBirthday для каждого друга
-    data.forEach((friend) => {
-      const today = moment();
-      const birthday = moment({
-        year: today.year(),
-        month: friend.birthday.indexMonth,
-        day: friend.birthday.day
-      });
-
-      const daysUntilBirthday = birthday.diff(today, 'days');
-      friend.daysUntilBirthday = daysUntilBirthday >= 0 ? daysUntilBirthday : daysUntilBirthday + 365;
-
-      // Добавляем класс "soon", если день рождения близко
-      friend.soon = friend.daysUntilBirthday <= friend.beforehand;
-    });
-
-
-
-    // Сортируем массив по свойствам daysUntilBirthday, indexMonth и day
-    data.sort((a, b) => {
-      if (a.daysUntilBirthday !== b.daysUntilBirthday) {
-        return a.daysUntilBirthday - b.daysUntilBirthday;
-      }
-      if (a.birthday.indexMonth !== b.birthday.indexMonth) {
-        return a.birthday.indexMonth - b.birthday.indexMonth;
-      }
-      return a.birthday.day - b.birthday.day;
-    });
-
-
-    friends.value = data
-    // console.log('friends:',data)
-    return { data, error: null };
-  } catch (error) {
-    console.error("Ошибка в fetchDataFriends:", error);
-    return { data: null, error };
+    const responseBody = await response.body.response.json();
+    console.log('responseBody:',responseBody);
+ 
+    // return { data: null, error };
+  }catch(e){
+    console.log(e);
   }
 };
+
+ // Добавляем свойство daysUntilBirthday для каждого друга
+    // data.forEach((friend) => {
+    //   const today = moment();
+    //   const birthday = moment({
+    //     year: today.year(),
+    //     month: friend.birthday.indexMonth,
+    //     day: friend.birthday.day
+    //   });
+
+    //   const daysUntilBirthday = birthday.diff(today, 'days');
+    //   friend.daysUntilBirthday = daysUntilBirthday >= 0 ? daysUntilBirthday : daysUntilBirthday + 365;
+
+    //   // Добавляем класс "soon", если день рождения близко
+    //   friend.soon = friend.daysUntilBirthday <= friend.beforehand;
+    // });
+    // // Сортируем массив по свойствам daysUntilBirthday, indexMonth и day
+    // data.sort((a, b) => {
+    //   if (a.daysUntilBirthday !== b.daysUntilBirthday) {
+    //     return a.daysUntilBirthday - b.daysUntilBirthday;
+    //   }
+    //   if (a.birthday.indexMonth !== b.birthday.indexMonth) {
+    //     return a.birthday.indexMonth - b.birthday.indexMonth;
+    //   }
+    //   return a.birthday.day - b.birthday.day;
+    // });
+    // friends.value = data
+    // // console.log('friends:',data)
+    // return { data, error: null };
+
+
+
+
 onMounted(()=>{
   fetchDataFriends()
 })
-
 
 const showEditMenu = () => {
   isOpen.value = true

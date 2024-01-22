@@ -3,15 +3,15 @@
 import { useAuth } from '~/store/auth'
 
 const isPrivateRoutes = [
-  '/profile',
-  '/home',
-  '/authors',
-  '/books',
-  '/weather'
+  // '/profile',
+  // '/friends',
+  // '/authors',
+  // '/books',
+  // '/weather'
 ]
 
-export default defineNuxtRouteMiddleware((to, from) => {
-  console.log("auth-middleware start!");
+export default defineNuxtRouteMiddleware((to) => {
+  // console.log("auth-middleware start!");
   // const app = useNuxtApp()
   const authStore = useAuth()
 

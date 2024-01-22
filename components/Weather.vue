@@ -1,22 +1,69 @@
+ <!-- components/Weather.vue -->
 <script setup>
-
-const data = ref(null)
+import $api from '~/http'
+import {useMyFetch} from '~/composables/useMyFetch'
+import { useAuth } from '~/store/auth';
+const weatherData = ref(null)
 const city = ref('Hassocks')
 
+const refreshToken = async () => {
+  const response = await useFetch('api/refresh')
+  const accessToken = response.data.value.body.accessToken
+  localStorage.setItem('access_token', accessToken)
+}
 const fetchWeather =  async () => {
+  const authStore = useAuth()
   try{
-    data.value = await (await fetch('/api/weather')).json()
+    
+    const { data } = await useFetch('/api/weather')
+    // const { data, pending, error, refresh } = await useFetch('api/weather',{
+    //   refetchOnWindowFocus: true, // Автоматически повторно отправить запрос при возвращении в фокус
+    //   onRequest({ request, options }) {
+    //     options.headers = options.headers || {}
+    //     options.headers.authorization = `${localStorage.getItem('access_token')}`
+    //   },
+    //   onRequestError({ request, options, error }) {
+    //     // Handle the request errors
+    //   },
+    //   onResponse ({ request, response, options }) {
+    //     if(response._data.error === 403){
+    //       const refreshToken = async () => {
+    //         const response = await useFetch('api/refresh')
+    //         const accessToken = response.data.value.body.accessToken
+    //         localStorage.setItem('access_token', accessToken)
+    //         // return refresh();
+    //       }
+    //       refreshToken()
+    //     } 
+    //     else if(response._data.error === 401){
+    //       authStore.logout()
+    //     } else {
+    //       console.log('response._data.error = ', response._data.error);
+    //     }
+    //   },
+    //   onResponseError({ request, response, options }) {
+    //     if(response._data.error === 401){
+    //       console.log('onResponseError 401');
+    //     }
+    //   }
+    // })
+
+    if (data) {
+      // console.log('data:', data.value);
+      weatherData.value = data.value;
+    } 
   }catch (error) {
-    console.error('Error fetching weather data:', error);
+    console.error('Error fetching weather data:');
   }
 }
-// const temp = ref(null)
+
 const temperature = (temp) => {
   return Math.round(Number(temp) - 272)
 }
+
+
 onMounted(()=>{
   fetchWeather()
-  // temp.value = data.main.temp
 })
 </script>
 
@@ -25,10 +72,10 @@ onMounted(()=>{
     <div class="weather__left">
       <h1 class="text-fw700 text-fz20">Current weather in {{ city }}</h1>
       <br>
-      <p v-if="data?.main?.temp">Temperature: <strong>{{ temperature(data.main.temp) }}°C</strong></p><br>
-      <p v-if="data?.main?.temp">Humidity: <strong>{{ data.main.humidity }}%</strong></p><br>
-      <p v-if="data?.weather[0]?.description">Weather: <strong>{{ data.weather[0].description }}</strong></p><br>
-      <p v-if="data?.wind?.speed">Wind Speed: <strong>{{ data.wind.speed }} m/s</strong></p><br>
+      <p v-if="weatherData?.main?.temp">Temperature: <strong>{{ temperature(weatherData.main.temp) }}°C</strong></p><br>
+      <p v-if="weatherData?.main?.temp">Humidity: <strong>{{ weatherData.main.humidity }}%</strong></p><br>
+      <!-- <p v-if="data?.weather[0]?.description">Weather: <strong>{{ data.weather[0].description }}</strong></p><br> -->
+      <p v-if="weatherData?.wind?.speed">Wind Speed: <strong>{{ weatherData.wind.speed }} m/s</strong></p><br>
       <div class="weather__img">
         <img src="/images/hassocks2.jpg" alt="img">
       </div>
@@ -59,44 +106,4 @@ onMounted(()=>{
 }
 </style>
 
-<!--        "coord": {                                                      -->
-  <!--        "lon": -0.1257,                                                     -->
-  <!--        "lat": 51.5085                                                      -->
-<!--        },                                                      -->
-<!--        "weather": [                                                      -->
-  <!--        {                                                     -->
-  <!--        "id": 800,                                                      -->
-  <!--        "main": "Clear",                                                      -->
-  <!--        "description": "clear sky",                                                     -->
-  <!--        "icon": "01n"                                                     -->
-  <!--        }                                                     -->
-<!--        ],                                                      -->
-<!--        "base": "stations",                                                     -->
-<!--        "main": {                                                     -->
-  <!--        "temp": 277.43,                                                     -->
-  <!--        "feels_like": 273.77,                                                     -->
-  <!--        "temp_min": 275.37,                                                     -->
-  <!--        "temp_max": 279.15,                                                         -->
-  <!--        "pressure": 1009,                                                         -->
-  <!--        "humidity": 85                                                          -->
-<!--        },                                                          -->
-<!--        "visibility": 10000,                                                          -->
-<!--        "wind": {                                                         -->
-  <!--        "speed": 4.63,                                                          -->
-  <!--        "deg": 280                                                          -->
-<!--        },                                                          -->
-<!--        "clouds": {                                                         -->
-<!--          "all": 9                                                          -->
-<!--        },                                                          -->
-<!--        "dt": 1701191871,                                                         -->
-<!--        "sys": {                                                          -->
-  <!--        "type": 2,                                                          -->
-  <!--        "id": 2075535,                                                          -->
-  <!--        "country": "GB",                                                          -->
-  <!--        "sunrise": 1701157146,                                                          -->
-  <!--        "sunset": 1701187076                                                          -->
-<!--        },                                                                  -->
-<!--        "timezone": 0,                                                                  -->
-<!--        "id": 2643743,                                                                  -->
-<!--        "name": "London",                                                                 -->
-<!--        "cod": 200                                                                        -->
+                                                                

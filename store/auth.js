@@ -2,10 +2,11 @@
 
 import { defineStore } from 'pinia'
 import AuthService from '~/services/AuthService.js'
+import axios from 'axios'
 
 export const useAuth = defineStore('authStore', {
   state: () => ({
-    user: {},
+    user: {},//email, id, role
     isAuth: false
   }),
   
@@ -62,9 +63,9 @@ export const useAuth = defineStore('authStore', {
       }
     },
   
-    async checkAuth1() {
+    async checkAuth() {
       try{
-        const response = await fetch('/refresh')
+        const response = await axios.get(`${process.env.API_URL}/refresh`, {withCredentials:true})
         localStorage.setItem('token', response.data.accessToken)
         this.state.isAuth = true
         this.user = response.data.user

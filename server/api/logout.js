@@ -1,7 +1,6 @@
 // server/api/logout.js
 
 import tokenService from "~/server/service/token-service.js";
-import cookieParser from "cookie-parser";
 
 export default defineEventHandler(async(event)=> {
   try{
