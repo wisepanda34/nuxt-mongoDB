@@ -4,6 +4,8 @@ import { defineStore } from 'pinia'
 import AuthService from '~/services/AuthService.js'
 import axios from 'axios'
 
+
+
 export const useAuth = defineStore('authStore', {
   state: () => ({
     user: {},//email, id, role
@@ -24,6 +26,7 @@ export const useAuth = defineStore('authStore', {
     logout(){
       this.isAuth = false
       this.user = {}
+      useUserExit()
     },
 
     async registration(email, password) {

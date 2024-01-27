@@ -3,11 +3,11 @@
 import { useAuth } from '~/store/auth'
 
 const isPrivateRoutes = [
-  // '/profile',
-  // '/friends',
-  // '/authors',
-  // '/books',
-  // '/weather'
+  '/profile',
+  '/friends',
+  '/authors',
+  '/books',
+  '/weather'
 ]
 
 export default defineNuxtRouteMiddleware((to) => {

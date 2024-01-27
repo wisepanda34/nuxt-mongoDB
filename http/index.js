@@ -1,6 +1,8 @@
 // http/index.js
-import  {useAuth}  from "~/store/auth";
 import axios from "axios";
+import { useAuth } from '~/store/auth';
+
+
 
 
 // env: API_URL=http://localhost:5000/api
@@ -15,29 +17,37 @@ $api.interceptors.request.use(config => {
     
      config.headers.Authorization = `${localStorage.getItem('access_token')}`
   }
+  console.log('interceptors.request has worked');
+  
   return config
 })
 
 
 $api.interceptors.response.use(
-  (config) => config,
+  // response => response,
+  config => config,
   async (error) => {
     console.log('Intercepting response:', error.response.status);
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest.isRetry) {
-      originalRequest.isRetry = true
+    if (error.response?.status === 401 && !error.config._isRetry) {
+      originalRequest._isRetry = true
 
       try {
-        console.log('api/refresh');
-        const response = await axios.get(`api/refresh`, { withCredentials: true });
-        localStorage.setItem('access_token', response.data.accessToken);
+        console.log('/api/refresh');
+        const response = await axios.get(`/api/refresh`, { withCredentials: true });
+        console.log('/api/refresh response :', response);
+        
+        localStorage.setItem('access_token', response.data.body.accessToken);
+        console.log('newAccessToken:', response.data.body.accessToken);
+        
         return $api.request(originalRequest);
       } catch (error) {
         console.log('User is unauthorized');
-        return Promise.reject(error)
+        // return Promise.reject(error)
       }
     } 
-    return Promise.reject(error);
+    // return Promise.reject(error);
+    throw error
   }
 );
 

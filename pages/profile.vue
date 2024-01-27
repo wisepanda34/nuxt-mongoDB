@@ -5,15 +5,7 @@
 </script>
 
 <template>
-  <section class="profile">
-    <h1 class="profile__title text-center text--fz24 text--fw700 text--grey-5">User Profile</h1>
-
-
-  </section>
+  <Profile/>
 </template>
 
 
-
-<style scoped lang="scss">
-
-</style>

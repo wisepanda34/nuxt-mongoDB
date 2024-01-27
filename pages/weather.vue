@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <Weather/>
+  <div>
+   <Weather/>
+  </div>
+ 
 </template>
 
-<style scoped lang="scss">
-
-</style>

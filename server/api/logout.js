@@ -6,6 +6,7 @@ export default defineEventHandler(async(event)=> {
   try{
     let refreshToken = getCookie(event, 'refreshToken')
     let easyToken = getCookie(event, 'easyToken')
+    
     const removeToken = await tokenService.removeToken(easyToken)
     setCookie(event, 'refreshToken', '',{
       maxAge: -1,
