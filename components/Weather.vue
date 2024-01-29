@@ -1,84 +1,37 @@
  <!-- components/Weather.vue -->
 <script setup>
-// import $api from '~/http'
-// import {useMyFetch} from '~/composables/useMyFetch'
-// import {useUserExit} from '~/composables/useUserExit'
-// import { useAuth } from '~/store/auth';
+import $api from '~/http';
 
+const route = '/api/weather';
 const city = ref('Hassocks')
+const weatherData = ref(null)
 
-    
-const { data: weatherData, pending, error, refresh }  = await useFetch('/api/weather',{
-  refetchOnWindowFocus: false, // Автоматически повторно отправить запрос при возвращении в фокус
-  onRequest({ request, options }) {
-    options.headers = options.headers || {}
-    options.headers.authorization = localStorage.getItem('access_token')
-  },
-
-  onResponse: async ({ request, response, options }) => {
-    // console.log('onResponse response', response)
-    // console.log('onResponse options', options)
-  },
-  // onResponseError: async ({ request, response, options }) => {
-  //   try {
-  //     if (response.status === 401) {
-  //       if (options._retry) {
-  //         console.log(options)
-  //         throw createError({ statusCode: response.status })
-  //       }
-
-  //       const { data, error } = await useFetch('/api/refresh',{ ...options, _retry:true});
-  //       console.log('refresh data:',data.value);
-  //       console.log('refresh error:',error.value)
-
-  //       if (error.value) {
-  //         throw createError({ statusCode: error.statusCode, statusMessage: 'Not valid refresh' })
-  //       }
-        
-  //       if (data.value.status === 200) {
-  //         const accessToken = data.value.body.accessToken;
-  //         console.log('accessToken: ok');
-  //         localStorage.setItem('access_token', accessToken);
-
-  //       } else {
-  //         console.log('status after refresh:',response.status);
-  //       }
-  //       const result =  await useFetch('/api/weather', { ...options, _retry: true})
-  //       console.log("result: ",result.data.value);
-        
-  //       return Promise.resolve(result)
-  //     }
-     
-  //     else {
-  //       throw createError({ statusCode: response.status })
-  //     }
-  //   } catch (error) {
-  //     console.log('logout')
-  //     console.error('onResponseError error:', error);
-  //     return Promise.reject(error)
-  //   }
-  // }
-});
-
-if (error) {
-  console.log(error.value)
-}
-
-console.log('weatherData:', weatherData);
-
-const refreshPage = () => {
-  // console.log('refresh');
-  
-  refresh()
-}
+const getData = async () => {
+  try {
+    const response = await $api.get(route);
+    weatherData.value = response.data;
+  } catch (error) {
+    console.log('Books.vue error:', error);
+  }
+};
 const temperature = (temp) => {
   return Math.round(Number(temp) - 272)
 }
+
+const refreshPage = () => {
+  getData();
+}
+
+onMounted(() => {
+  getData();
+});
+
+
 </script>
 
 <template>
   <section class="weather">
-    <div v-if="pending" class="text-center text--grey-4">Loading...</div>
+    <div v-if="!weatherData" class="text-center text--grey-4">Loading...</div>
     <div v-else class="weather__wrapper">
       <div class="weather__left">
         <div class="flex">
@@ -103,7 +56,6 @@ const temperature = (temp) => {
       </div>
     </div>
     
-
   </section>
 </template>
 

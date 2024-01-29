@@ -1,9 +1,6 @@
 <!-- Authors.vue -->
  <script setup>
-import { onMounted } from 'vue';
 import $api from '~/http';
-import {useAuth} from '~/store/auth'
-import { useUserExit } from '#imports'
 
 
 const route = '/api/authors';
@@ -18,7 +15,6 @@ const getData = async () => {
   }
 };
 
-// Вызываем getData при монтировании компонента
 onMounted(() => {
   getData();
 });

@@ -1,16 +1,9 @@
 // server/api/books.get.js
 
-import bookModel from "../models/Book"
+import bookModel from "@/server/models/Book";
+import { fetchData } from "~/server/api/utils/data-fetcher";
 
-export default defineEventHandler(async(event) => {
+export default defineEventHandler(async (event) => {
 
-  try{
-    const response = await bookModel.find();
-    console.log('books.get.js: ok');
-    if(response){
-      return response
-    }
-  } catch(error) {
-    console.log('books.get.js error:', error);
-  }
-})
+  return fetchData(bookModel, event);
+});

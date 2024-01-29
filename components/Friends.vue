@@ -1,107 +1,4 @@
-<template>
-  <div class="friends">
-    <div class="friends__heading">
-      <Button v-if="!openFormAddFriend" text="Add friend" type="button" @click="openForm"/>
-      <Button v-if="openFormAddFriend" text="Close friend" type="button" @click="closeForm"/>
-      <div>{{currentDate()}}</div>
-    </div>
-
-
-    <div v-if="!openFormAddFriend" class="friends__info">
-      <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
-      <TransitionGroup name="list" tag="ul">
-        <li
-            class="friends__item"
-            v-for="(friend, index) in friends"
-            :key="friend._id"
-            :class="{ soon: friend.soon }"
-            @click="toggleInfo(index)"
-        >
-
-          <div class="friends__item-header">
-            <div class="friends__name">
-              <p>{{friend.name}} {{friend.surname}}</p>
-            </div>
-            <div class="friends__date">
-              <p>{{convertDate(friend.birthday, monthsStore)}}</p>
-            </div>
-            <div class="friends__old">
-              <p>{{convertAge(friend.birthday)}}</p>
-            </div>
-          </div>
-
-          <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
-            <div v-if="openInfo===index" class="friends__box">
-              <div>
-                <p>{{ friend.info }} </p><br>
-                <p v-if="friend.beforehand !== 'none'">advise in {{friend.beforehand}} days </p>
-              </div>
-
-              <div class="friends__edit" @click.stop="showEditMenu">
-                <img src="/images/edit.png" alt="edit">
-                <transition name="bounce">
-                  <div v-show="isOpen" class="friends__editMenu">
-                    <div class="friends__editItem" @click.stop="updateFriend(index, friend._id)">change</div>
-                    <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
-                  </div>
-                </transition>
-
-              </div>
-            </div>
-          </transition>
-
-        </li>
-      </TransitionGroup>
-    </div>
-
-    <div v-if="openFormAddFriend" class="friends__new">
-      <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
-      <form class="friends__form">
-          <Input
-              id="idName"
-              textLabel="Name"
-              type="text"
-              placeholder=""
-              v-model.trim="name"
-              class="friends__input"
-          />
-          <Input
-              id="idSurname"
-              textLabel="Surname"
-              type="text"
-              placeholder=""
-              v-model.trim="surname"
-              class="friends__input"
-          />
-          <DateInput :date="date" @update:selectedDate="updateDate"/>
-          <YearInput :year="year" @update:selectedYear="updateYear"/>
-          <TextAria
-              id="idInfo"
-              textLabel="Info"
-              placeholder=""
-              v-model.trim="info"
-              class="friends__input"
-          />
-          <SelectBeforeHand v-model="selectedDeadline"/>
-          <Button
-            v-if="!updateProcess"
-            text="Save friend"
-            type="submit"
-            class="friends__btn"
-            @click.prevent="onSubmitFriend"
-          />
-          <Button
-            v-if="updateProcess"
-            text="Update friend"
-            type="submit"
-            class="friends__btn"
-            @click.prevent="updateSubmitFriend"
-          />
-      </form>
-    </div>
-
-  </div>
-</template>
+ <!-- components/Friends.vue -->
 
 <script setup>
 import Button from "~/components/UI/Button.vue";
@@ -120,6 +17,7 @@ import axios from "axios";
 
 const monthsStore = useMonths()
 const friends = ref([])
+const route = '/api/birthdays';
 const chosenFriend = ref({})
 
 const name = ref('')
@@ -194,9 +92,6 @@ const onSubmitFriend = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    // const data = await response.json();
-    // console.log(data);
-
 
     await fetchDataFriends()
     openFormAddFriend.value = false
@@ -207,92 +102,15 @@ const onSubmitFriend = async () => {
   }
 };
 
-
-
-// while (true) { // Цикл для повторных попыток с обновленным токеном
-    //   console.log('while');
-      
-    //   const result = await fetch("/api/birthdays", {
-    //     headers: {
-    //       'Authorization': `${accessToken}`
-    //     },
-    //     retryOnStatus: [401],
-    //     onRetry: async () => {
-    //       console.log('start onRetry');
-          
-    //       const refreshResult = await fetch('/api/refresh');
-    //       console.log('refreshResult');
-
-    //       const refreshResultJson = await refreshResult.json();
-    //       console.log('refreshResultJson:',refreshResultJson);
-          
-    //       if(refreshResultJson.status == 402){
-    //         console.log('status 401:', body.message);
-    //         navigateTo('/login')
-    //       } else if(refreshResultJson.status == 400){
-    //         console.log('status 400:', body.message);
-    //         navigateTo('/login')
-    //       } else if(refreshResultJson.status == 200){
-    //         let accessToken = refreshResultJson.body.accessToken
-    //         if (accessToken) {
-    //           localStorage.setItem('access_token', accessToken)
-    //           console.log('accessToken:', accessToken);
-    //         }
-    //       }
-    //     }
-    //   });
-
-    //   if (result.ok) {
-    //     break;
-    //   }
-    // }
-//  =================================================================
 const fetchDataFriends = async () => {
   try {
-    const response = await $api.get(`api/birthdays`)
-    console.log('response:', response);
-    if(!response.ok){
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const responseBody = await response.body.response.json();
-    console.log('responseBody:',responseBody);
- 
-    // return { data: null, error };
-  }catch(e){
-    console.log(e);
+    const response = await $api.get(route);
+    
+    friends.value = response.data;
+  } catch (error) {
+    console.log('fetchDataFriends error:', error);
   }
 };
-
- // Добавляем свойство daysUntilBirthday для каждого друга
-    // data.forEach((friend) => {
-    //   const today = moment();
-    //   const birthday = moment({
-    //     year: today.year(),
-    //     month: friend.birthday.indexMonth,
-    //     day: friend.birthday.day
-    //   });
-
-    //   const daysUntilBirthday = birthday.diff(today, 'days');
-    //   friend.daysUntilBirthday = daysUntilBirthday >= 0 ? daysUntilBirthday : daysUntilBirthday + 365;
-
-    //   // Добавляем класс "soon", если день рождения близко
-    //   friend.soon = friend.daysUntilBirthday <= friend.beforehand;
-    // });
-    // // Сортируем массив по свойствам daysUntilBirthday, indexMonth и day
-    // data.sort((a, b) => {
-    //   if (a.daysUntilBirthday !== b.daysUntilBirthday) {
-    //     return a.daysUntilBirthday - b.daysUntilBirthday;
-    //   }
-    //   if (a.birthday.indexMonth !== b.birthday.indexMonth) {
-    //     return a.birthday.indexMonth - b.birthday.indexMonth;
-    //   }
-    //   return a.birthday.day - b.birthday.day;
-    // });
-    // friends.value = data
-    // // console.log('friends:',data)
-    // return { data, error: null };
-
-
 
 
 onMounted(()=>{
@@ -400,10 +218,112 @@ const removeSubmitFriend = async (id) => {
   }
 }
 
-
 </script>
 
+<template>
+  <div class="friends">
+    <div class="friends__heading">
+      <Button v-if="!openFormAddFriend" text="Add friend" type="button" @click="openForm"/>
+      <Button v-if="openFormAddFriend" text="Close friend" type="button" @click="closeForm"/>
+      <div>{{currentDate()}}</div>
+    </div>
 
+
+    <div v-if="!openFormAddFriend" class="friends__info">
+      <h1 class="friends__title text-center text-fz24 text-fw700">Upcoming birthdays</h1>
+      <TransitionGroup name="list" tag="ul">
+        <li
+            class="friends__item"
+            v-for="(friend, index) in friends"
+            :key="friend._id"
+            :class="{ soon: friend.soon }"
+            @click="toggleInfo(index)"
+        >
+
+          <div class="friends__item-header">
+            <div class="friends__name">
+              <p>{{friend.name}} {{friend.surname}}</p>
+            </div>
+            <div class="friends__date">
+              <p>{{convertDate(friend.birthday, monthsStore)}}</p>
+            </div>
+            <div class="friends__old">
+              <p>{{convertAge(friend.birthday)}}</p>
+            </div>
+          </div>
+
+          <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
+            <div v-if="openInfo===index" class="friends__box">
+              <div>
+                <p>{{ friend.info }} </p><br>
+                <p v-if="friend.beforehand !== 'none'">advise in {{friend.beforehand}} days </p>
+              </div>
+
+              <div class="friends__edit" @click.stop="showEditMenu">
+                <img src="/images/edit.png" alt="edit">
+                <transition name="bounce">
+                  <div v-show="isOpen" class="friends__editMenu">
+                    <div class="friends__editItem" @click.stop="updateFriend(index, friend._id)">change</div>
+                    <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
+                  </div>
+                </transition>
+
+              </div>
+            </div>
+          </transition>
+
+        </li>
+      </TransitionGroup>
+    </div>
+
+    <div v-if="openFormAddFriend" class="friends__new">
+      <h1 class="friends__title text-center text-fz24 text-fw700">Adding info about a friend</h1>
+      <form class="friends__form">
+          <Input
+              id="idName"
+              textLabel="Name"
+              type="text"
+              placeholder=""
+              v-model.trim="name"
+              class="friends__input"
+          />
+          <Input
+              id="idSurname"
+              textLabel="Surname"
+              type="text"
+              placeholder=""
+              v-model.trim="surname"
+              class="friends__input"
+          />
+          <DateInput :date="date" @update:selectedDate="updateDate"/>
+          <YearInput :year="year" @update:selectedYear="updateYear"/>
+          <TextAria
+              id="idInfo"
+              textLabel="Info"
+              placeholder=""
+              v-model.trim="info"
+              class="friends__input"
+          />
+          <SelectBeforeHand v-model="selectedDeadline"/>
+          <Button
+            v-if="!updateProcess"
+            text="Save friend"
+            type="submit"
+            class="friends__btn"
+            @click.prevent="onSubmitFriend"
+          />
+          <Button
+            v-if="updateProcess"
+            text="Update friend"
+            type="submit"
+            class="friends__btn"
+            @click.prevent="updateSubmitFriend"
+          />
+      </form>
+    </div>
+
+  </div>
+</template>
 
 
 
