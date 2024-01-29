@@ -13,7 +13,6 @@ export default defineEventHandler(async(event)=> {
 
     // если refreshToken отсутствует в куках
     if(!refreshToken) {
-      console.log('No refreshToken');
       setResponseStatus(event, 401);
       return { body:{ message: "No refreshToken, user needs to log in!"}}
     }
@@ -22,7 +21,6 @@ export default defineEventHandler(async(event)=> {
     const userData = tokenService.validateRefreshToken(refreshToken)
     const tokenFromDB = await tokenService.findToken(refreshToken)
     if(!userData || !tokenFromDB) {
-      console.log('!userData || !tokenFromDB');
       setResponseStatus(event, 401);
       return { status: 401, body:{ message: "User is not authorizated!"}}
 
@@ -31,7 +29,6 @@ export default defineEventHandler(async(event)=> {
       const findUser = await UserModel.findById(userData.id) 
       const userDto = createUserDto(findUser)
       const tokens = tokenService.generateTokens({...userDto})
-      console.log('accessToken was refreshed:', tokens.accessToken);
       
       return {
         status: 200,
@@ -41,7 +38,6 @@ export default defineEventHandler(async(event)=> {
    
   }catch (error) {
     console.error('Error registration.js:', error.message);
-    console.error('Stack Trace:', error.stack);
 
     return {
       status: 500,

@@ -11,13 +11,10 @@ const authorsData = ref(null);
 
 const getData = async () => {
   try {
-    console.log('Fetching data...');
     const response = await $api.get(route);
     authorsData.value = response.data;
-    console.log(authorsData.value);
   } catch (error) {
-    console.error('Error fetching data:', error);
-    useUserExit()
+    console.log('Authors.vue error:', error);
   }
 };
 

@@ -26,7 +26,6 @@ export const useAuth = defineStore('authStore', {
     logout(){
       this.isAuth = false
       this.user = {}
-      useUserExit()
     },
 
     async registration(email, password) {
