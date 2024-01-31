@@ -1,13 +1,23 @@
 // middleawares/onlyAdmin.js
 
-// import { defineNuxtRouteMiddleware, navigateTo } from "nuxt/app";
-// import { useAuthStore } from "@/stores/auth";
-//
+// import { useAuth } from "@/stores/auth";
+
+
+
 // export default defineNuxtRouteMiddleware(() => {
-//   const authStore = useAuthStore();
-//
-//   if (!authStore.isMerchant) {
-//     return navigateTo(useLocalePathUtil("/wallet"));
-//   }
+  // const authStore = useAuth();
+
+  // const isAdminRoutes = ['/admin']
+    
+
+  // const isAdminRoute = isAdminRoutes.some(adminRoute => to.path.includes(adminRoute))
+  // const isAdminAuthed = authStore.getIsAdmin
+  // if (isAdminRoute && !isAdminAuthed) {
+  //   return navigateTo('/admin')
+  // }
+
+  // if (!authStore.isMerchant) {
+  //   return navigateTo(useLocalePathUtil("/wallet"));
+  // }
 // });
 

@@ -5,15 +5,18 @@ import Button from "~/components/UI/Button.vue";
 import Input from "~/components/UI/Input.vue";
 import CheckBox from "~/components/UI/CheckBox.vue";
 import BaseModal from "~/components/modal/BaseModal.vue";
-import { useAuth } from "@/store/auth";
+import { useAuth } from "~/store/auth";
 
 
 definePageMeta({
   layout: 'custom'
 })
 
-const email = ref('bob@mail.qwqw')
-const password = ref('qwqw')
+// const email = ref('bob@mail.qwqw')
+// const password = ref('qwqw')
+
+const email = ref('admin')
+const password = ref('admin')
 const forgotPassword = ref(false)
 const sentCode = ref(false)
 const modalText = ref('')
@@ -37,10 +40,20 @@ const handleLogin = async () => {
     // console.log('responseBody.body.user:', responseBody.body.user);
     authStore.login(responseBody.body.user)
     localStorage.setItem('access_token', responseBody.body.accessToken) 
-    openModal(responseBody.body.message)
-    setTimeout(()=>{
-      navigateTo('/books')
-    },2000)
+    openModal(responseBody.body.user.role)
+    console.log();
+    
+    if(responseBody.body.user.role === 'user'){
+      // setTimeout(()=>{
+      //   navigateTo('/profile')
+      // },1000)
+      navigateTo('/profile')
+    } else if (responseBody.body.user.role === 'admin'){
+      // setTimeout(()=>{
+      //   navigateTo('/admin')
+      // },1000)
+      navigateTo('/admin')
+    }
 
   }catch (error) {
     console.log('Error:', error.message);

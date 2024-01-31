@@ -36,7 +36,7 @@ onMounted(() => {
       <div class="weather__left">
         <div class="flex">
           <h1 class="text-fw700 text-fz20">Current weather in {{ city }} </h1>
-          <div class="weather__recycle" @click.prevent="refreshPage"><img src="../public/svg/recycle.svg" alt="recycle"></div>
+          <div class="weather__recycle" @click.prevent="refreshPage"><img src="/svg/recycle.svg" alt="recycle"></div>
         </div>
       
         <br>

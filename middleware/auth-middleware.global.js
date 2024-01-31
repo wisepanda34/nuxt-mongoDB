@@ -2,22 +2,26 @@
 
 import { useAuth } from '~/store/auth'
 
-const isPrivateRoutes = [
+const privateRoutes = [
   '/profile',
   '/friends',
   '/authors',
   '/books',
   '/weather'
 ]
+const adminRoutes = [
+  '/admin',
+]
 
 export default defineNuxtRouteMiddleware((to) => {
-  // console.log("auth-middleware start!");
-  // const app = useNuxtApp()
+  console.log("auth-middleware start!");
   const authStore = useAuth()
 
-  const isPrivateRoute = isPrivateRoutes.some(privetRoute => to.path.includes(privetRoute))
+  const isPrivateRoute = privateRoutes.some(privateRoute => to.path.includes(privateRoute))
   const isUserAuthed = authStore.getIsAuth
+ 
   if (isPrivateRoute && !isUserAuthed) {
-    return navigateTo('/')
+    return navigateTo('/login')
   }
+  
 })

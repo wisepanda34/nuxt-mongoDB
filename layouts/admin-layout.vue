@@ -1,11 +1,12 @@
+<!-- pages/admin.vue -->
 <script setup>
 
-import Logo from "~/components/UI/Logo.vue";
+
 </script>
 
 <template>
   <div class="wrapper site">
-    <Logo/>
+    <Admin-header/>
     <slot/>
     <Footer/>
   </div>

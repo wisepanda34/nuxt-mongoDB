@@ -5,9 +5,9 @@ import Logo from "~/components/UI/Logo.vue";
 import {useAuth} from "~/store/auth.js"
 
 const authStore = useAuth()
-const logOut = async () => {
+const logout = async () => {
   try{
-    await fetch('api/logout')
+    await fetch('/api/logout')
     
   }catch (error) {
     console.log('Error:', error.message)
@@ -37,7 +37,7 @@ const logOut = async () => {
     <div class="header__client">
       <nuxt-link v-if="!authStore.isAuth"  to="/login">Login</nuxt-link>
       <nuxt-link v-if="authStore.isAuth" to="/profile" class="header__email">{{ authStore.user.email }}</nuxt-link>
-      <span v-if="authStore.isAuth" class="header__logout" @click="logOut">Logout</span>
+      <span v-if="authStore.isAuth" class="header__logout" @click="logout">Logout</span>
       <nuxt-link v-if="!authStore.isAuth"   to="/registration">registration</nuxt-link>
     </div>
   </div>
