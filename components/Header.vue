@@ -6,19 +6,12 @@ import {useAuth} from "~/store/auth.js"
 
 const authStore = useAuth()
 const logout = async () => {
-  try{
-    await fetch('/api/logout')
-    
-  }catch (error) {
-    console.log('Error:', error.message)
-  }finally{
-    authStore.logout()
-    localStorage.removeItem('access_token')
-    setTimeout(()=>{
-      navigateTo('/')
-    },500)
+  try {
+    await authStore.logout();
+  } catch (error) {
+    console.log("Error:", error.message);
   }
-}
+};
 
 </script>
 

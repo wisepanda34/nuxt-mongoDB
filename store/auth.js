@@ -3,6 +3,7 @@
 import { defineStore } from 'pinia'
 import AuthService from '~/services/AuthService.js'
 import axios from 'axios'
+import $api from '~/http'
 
 export const useAuth = defineStore('authStore', {
   
@@ -24,9 +25,17 @@ export const useAuth = defineStore('authStore', {
       this.isAuth = true
       this.user = user
     },
-    logout(){
-      this.isAuth = false
-      this.user = {}
+    async logout(){
+      try {
+        await $api.get("/api/logout")
+        localStorage.removeItem("access_token");
+      } catch(error){
+        console.log("Error logging out:", error.message);
+      } finally {
+        this.isAuth = false
+        this.user = {}
+        navigateTo('/login')
+      }
     },
   }
 })

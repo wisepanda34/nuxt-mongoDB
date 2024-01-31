@@ -14,14 +14,20 @@ const adminRoutes = [
 ]
 
 export default defineNuxtRouteMiddleware((to) => {
-  console.log("auth-middleware start!");
   const authStore = useAuth()
 
   const isPrivateRoute = privateRoutes.some(privateRoute => to.path.includes(privateRoute))
+  const isAdminRoute = adminRoutes.some(adminRoute => to.path.includes(adminRoute))
   const isUserAuthed = authStore.getIsAuth
- 
+
   if (isPrivateRoute && !isUserAuthed) {
     return navigateTo('/login')
   }
-  
+  if (!isAdminRoute && isUserAuthed?.role === 'admin') {
+    return navigateTo('/admin')
+  }
+  if (isAdminRoute && isUserAuthed?.role !== 'admin') {
+    return navigateTo('/')
+  }
+
 })

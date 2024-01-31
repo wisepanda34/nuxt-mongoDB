@@ -12,11 +12,12 @@ definePageMeta({
   layout: 'custom'
 })
 
-// const email = ref('bob@mail.qwqw')
-// const password = ref('qwqw')
+const email = ref('bob@mail.qwqw')
+const password = ref('qwqw')
 
-const email = ref('admin')
-const password = ref('admin')
+// const email = ref('admin')
+// const password = ref('admin')
+
 const forgotPassword = ref(false)
 const sentCode = ref(false)
 const modalText = ref('')
@@ -41,7 +42,7 @@ const handleLogin = async () => {
     authStore.login(responseBody.body.user)
     localStorage.setItem('access_token', responseBody.body.accessToken) 
     openModal(responseBody.body.user.role)
-    console.log();
+    console.log('role login', responseBody.body.user.role);
     
     if(responseBody.body.user.role === 'user'){
       // setTimeout(()=>{
