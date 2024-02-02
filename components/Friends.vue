@@ -203,21 +203,16 @@ const updateSubmitFriend = async () => {
 const removeSubmitFriend = async (id) => {
 
   if(!id) {
-    console.log("Did not select friend for remove")
+    throw new Error("Friend not selected for removal");
   }
   try{
-    const response = await fetch("/api/delete-friend", {
-      method: "DELETE",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({id})
-    })
+    const response = await $api.delete(`/api/delete-friend?id=${id}`)
 
-    if(!response.ok) {
+    if(response.status !== 200) {
       return  `HTTP error! Status: ${response.status}`
+    } else {
+      console.log('That friend was deleted successfully!');
     }
-    console.log('Friend deleted successfully');
     await fetchDataFriends();
   }catch (error) {
     console.error("Error removeSubmitFriend", error.message)

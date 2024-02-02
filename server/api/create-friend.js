@@ -4,14 +4,12 @@ import BirthdayModel from "~/server/models/Birthday.js";
 export default defineEventHandler(async (event) => {
     try {
         const userId = getRequestHeader(event, 'userId');
-        console.log('userId:', userId);
         if(!userId){
             return {body: {message: "no userId"}}
         }
         
         const { name, surname, birthday, info, beforehand } = await readBody(event);
         const existingFriend = await BirthdayModel.findOne({ user: userId });
-        console.log('existingFriend: ',existingFriend);
         
 
         if (existingFriend){

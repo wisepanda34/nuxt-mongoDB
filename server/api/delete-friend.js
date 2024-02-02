@@ -3,13 +3,17 @@ import BirthdayModel from "~/server/models/Birthday.js";
 
 export default defineEventHandler(async(event)=> {
     try {
-        const body = await readBody(event);
-        const { id } = body; // Access the "id" property from the body
-        console.log("ID:", id);
-        if (!id) {
-            throw new Error('No ID provided');
+        const userId = getRequestHeader(event, 'userId');
+        if(!userId){
+            return {body: {message: "no userId"}}
         }
-        await BirthdayModel.deleteOne({ _id: id });
+        const query = getQuery(event)
+        
+        await BirthdayModel.updateOne(
+            { user: userId },
+            { $pull: { 'friends': { _id: query.id } } }
+        );
+
         return {
             status: 200,
             body: { message: 'Друг успешно удален' },
