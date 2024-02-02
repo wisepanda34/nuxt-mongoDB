@@ -1,18 +1,58 @@
 <!-- Admin.vue -->
 <script setup>
+import Logo from "~/components/UI/Logo.vue";
+import {useAuth} from "~/store/auth.js"
 
+
+const authStore = useAuth()
+
+const logout = async () => {
+  try {
+    await authStore.logout();
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
+};
 </script>
 
 <template>
-  <section class="admin">
-    <div v-if="!adminData">Loading...</div>
+  <div class="admin">
 
-    <div v-else class="admin__wrapper">
-      <h1 class="text-center text--grey-4" >ADMIN PANEL</h1>
+    <div class="admin__header">
+      <Logo/>
+      <div class="admin__header-link">All Users</div>
+      <div class="admin__header-link" @click="logout">Logout</div>
     </div>
-  </section>
+    <section class="admin__main">
+      <h1 class="admin__title text-center text--grey-5">ADMIN PANEL</h1>
+      <div></div>
+    </section>
+  </div>
+  
 </template>
 
 <style scoped lang="scss">
+.admin{
 
-</style>
+  &__header{
+  height: 100px;
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+
+  background: orangered;
+  border-radius: 8px;
+  }
+
+  &__header-link {
+    cursor: pointer;
+  }
+
+  &__main{
+    padding: 20px;
+  }
+}
+</style>  

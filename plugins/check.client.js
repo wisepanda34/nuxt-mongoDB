@@ -1,7 +1,6 @@
 // plugins/check.client.js
 
 export default defineNuxtPlugin((nuxtApp) => {
-  console.log('check.client.js', process.client);
   
   nuxtApp.hook('app:created', () => {
     if (process.client){

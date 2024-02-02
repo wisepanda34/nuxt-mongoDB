@@ -42,7 +42,6 @@ const handleLogin = async () => {
     authStore.login(responseBody.body.user)
     localStorage.setItem('access_token', responseBody.body.accessToken) 
     openModal(responseBody.body.user.role)
-    console.log('role login', responseBody.body.user.role);
     
     if(responseBody.body.user.role === 'user'){
       // setTimeout(()=>{

@@ -36,7 +36,7 @@ const useMyFetch = (route) => {
           retryCount.value++
 
           try {
-            const refreshResponse =  await axiosInstance.get('api/refresh')
+            const refreshResponse =  await axiosInstance.get('/api/refresh')
             const newAccessToken = refreshResponse.data.accessToken
             localStorage.setItem('access_token', newAccessToken)
             axiosInstance.defaults.headers.common['Authorization'] = newAccessToken

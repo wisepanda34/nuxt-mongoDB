@@ -15,8 +15,7 @@ export const useAuth = defineStore('authStore', {
   
   getters:{
     getIsAuth(state){
-      console.log('getIsAuth');
-      return state.user?.role ? { role: state.user.role, isAuth: state.isAuth, email: state.user.email} : null;
+      return state.user?.role ? { role: state.user.role, isAuth: state.isAuth, email: state.user.email, userId: state.user.id} : null;
     },
   },
   

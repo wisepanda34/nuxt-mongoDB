@@ -14,7 +14,9 @@ import SelectBeforeHand from "~/components/UI/SelectBeforeHand.vue";
 import $api from "~/http";
 import axios from "axios";
 // import { body } from "express-validator";
+import { useAuth } from "~/store/auth";
 
+const authStore = useAuth()
 const monthsStore = useMonths()
 const friends = ref([])
 const route = '/api/birthdays';
@@ -71,12 +73,15 @@ const onSubmitFriend = async () => {
       console.log("Invalid Name or data from DateInput")
       return
     }
+    
     const dataNewFriend = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'userId': authStore.getIsAuth.userId,
       },
       body: JSON.stringify({
+        
         name: name.value,
         surname: surname.value,
         birthday: {
@@ -105,6 +110,7 @@ const onSubmitFriend = async () => {
 const fetchDataFriends = async () => {
   try {
     const response = await $api.get(route);
+    console.log('fetchDataFriends:', response.data);
     
     friends.value = response.data;
   } catch (error) {
@@ -234,37 +240,37 @@ const removeSubmitFriend = async (id) => {
       <TransitionGroup name="list" tag="ul">
         <li
             class="friends__item"
-            v-for="(friend, index) in friends"
-            :key="friend._id"
-            :class="{ soon: friend.soon }"
+            v-for="(item, index) in friends"
+            :key="item._id"
+            :class="{ soon: item.soon }"
             @click="toggleInfo(index)"
         >
 
           <div class="friends__item-header">
             <div class="friends__name">
-              <p>{{friend.name}} {{friend.surname}}</p>
+              <p>{{item.friend.name}} {{item.friend.surname}}</p>
             </div>
             <div class="friends__date">
-              <p>{{convertDate(friend.birthday, monthsStore)}}</p>
+              <p>{{convertDate(item.friend.birthday, monthsStore)}}</p>
             </div>
             <div class="friends__old">
-              <p>{{convertAge(friend.birthday)}}</p>
+              <p>{{convertAge(item.friend.birthday)}}</p>
             </div>
           </div>
 
           <transition name="slide-fade" :duration="{ enter: 500, leave: 800 }">
             <div v-if="openInfo===index" class="friends__box">
               <div>
-                <p>{{ friend.info }} </p><br>
-                <p v-if="friend.beforehand !== 'none'">advise in {{friend.beforehand}} days </p>
+                <p>{{ item.friend.info }} </p><br>
+                <p v-if="item.friend.beforehand !== 'none'">advise in {{item.friend.beforehand}} days </p>
               </div>
 
               <div class="friends__edit" @click.stop="showEditMenu">
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
                   <div v-show="isOpen" class="friends__editMenu">
-                    <div class="friends__editItem" @click.stop="updateFriend(index, friend._id)">change</div>
-                    <div class="friends__editItem" @click.stop="removeFriend(friend._id,index)">delete</div>
+                    <div class="friends__editItem" @click.stop="updateFriend(index, item._id)">change</div>
+                    <div class="friends__editItem" @click.stop="removeFriend(item._id,index)">delete</div>
                   </div>
                 </transition>
 

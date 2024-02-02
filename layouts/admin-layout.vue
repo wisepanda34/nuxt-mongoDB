@@ -6,7 +6,6 @@
 
 <template>
   <div class="wrapper site">
-    <Admin-header/>
     <slot/>
     <Footer/>
   </div>

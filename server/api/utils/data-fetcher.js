@@ -6,14 +6,11 @@ export async function fetchData(model, event) {
     const accessToken = getRequestHeader(event, 'Authorization');
 
     if (accessToken) {
-
       const isAccessTokenValidated = TokenService.validateAccessToken(accessToken);
 
       if (!isAccessTokenValidated) {
         setResponseStatus(event, 401);
-        return {
-          message: 'accessToken is not valid'
-        };
+        return { message: 'accessToken is not valid'};
       }
     }
 
@@ -22,9 +19,7 @@ export async function fetchData(model, event) {
     if (response) {
       return response;
     } else {
-      return {
-        body: { message: "no data from DB" }
-      };
+      return { body: { message: "no data from DB" }};
     }
   } catch (error) {
     console.log(`data-fetcher.js error:`, error);
