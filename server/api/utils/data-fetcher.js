@@ -4,11 +4,12 @@ import TokenService from "~/server/service/token-service.js";
 export async function fetchData(model, event) {
   try {
     const accessToken = getRequestHeader(event, 'Authorization');
+    let tokenId = null
 
     if (accessToken) {
-      const isAccessTokenValidated = TokenService.validateAccessToken(accessToken);
+      tokenId = TokenService.validateAccessToken(accessToken);
 
-      if (!isAccessTokenValidated) {
+      if (!tokenId) {
         setResponseStatus(event, 401);
         return { message: 'accessToken is not valid'};
       }

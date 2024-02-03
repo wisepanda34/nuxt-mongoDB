@@ -15,10 +15,11 @@ const TokenService = {
 
   validateAccessToken(token) {
     try{
-      return  jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+      let decodated = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+      return decodated.id
     }catch (error) {
       console.log('validateAccessToken() invalid')
-      return false
+      return null
     }
   },
 

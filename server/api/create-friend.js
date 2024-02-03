@@ -1,16 +1,27 @@
 // server/api/create-friend.js
 import BirthdayModel from "~/server/models/Birthday.js";
+import TokenService from "~/server/service/token-service.js";
+
 
 export default defineEventHandler(async (event) => {
     try {
-        const userId = getRequestHeader(event, 'userId');
-        if(!userId){
-            return {body: {message: "no userId"}}
+        
+        const accessToken = getRequestHeader(event, 'Authorization');
+        
+        let tokenId = null
+
+        if (accessToken) {
+            tokenId = await TokenService.validateAccessToken(accessToken);
+            
+            if (!tokenId) {
+                setResponseStatus(event, 401);
+                return { message: 'accessToken is not valid'};
+            }
         }
         
         const { name, surname, birthday, info, beforehand } = await readBody(event);
-        const existingFriend = await BirthdayModel.findOne({ user: userId });
         
+        const existingFriend = await BirthdayModel.findOne({ user: tokenId });
 
         if (existingFriend){
             existingFriend.friends.push({
@@ -22,16 +33,17 @@ export default defineEventHandler(async (event) => {
                     beforehand
                 }
             });  
+
             try {
                 await existingFriend.save();
                 return { body: { message: 'Friend data received successfully' }};
-            } catch (saveError) {
-                console.error('Error during saving:', saveError.message);
+            } catch (error) {
+                console.error('Error during saving:', error.message);
                 return { body: { error: 'Error saving friend data' }};
             }
         } else {
             const newFriend = new BirthdayModel({
-                user: userId,
+                user: tokenId,
                 friends: [
                     {
                         friend: {
@@ -51,7 +63,6 @@ export default defineEventHandler(async (event) => {
                 console.error('Error during saving:', error.message);
                 return { body: { error: 'Error saving friend data' }};
             }
-            
         }
     } catch (error) {
         console.error('Error:', error.message);

@@ -1,7 +1,6 @@
 // http/index.js
 import axios from "axios";
 import { useUserExit } from '#imports'
-import { useAuth } from "~/store/auth";
 
 
 
@@ -13,13 +12,10 @@ const $api = axios.create({
 
 
 $api.interceptors.request.use(config => {
-  const authStore = useAuth()
   if(localStorage.getItem('access_token')){
      config.headers.Authorization = `${localStorage.getItem('access_token')}`
   }
-  if(authStore.getIsAuth.userId){
-    config.headers.userId = authStore.getIsAuth.userId
-  }
+  // console.log('config: ', config);
   
   return config
 })

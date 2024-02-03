@@ -65,6 +65,9 @@ const updateYear = (newDate) => {
   year.value = newDate;
 };
 
+
+
+
 const onSubmitFriend = async () => {
 
   try {
@@ -75,14 +78,7 @@ const onSubmitFriend = async () => {
     }
     
     const dataNewFriend = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'userId': authStore.getIsAuth.userId,
-      },
-      body: JSON.stringify({
-        
-        name: name.value,
+      name: name.value,
         surname: surname.value,
         birthday: {
           day: day,
@@ -91,10 +87,10 @@ const onSubmitFriend = async () => {
         },
         info: info.value,
         beforehand: selectedDeadline.value
-      })
     }
-    const response = await fetch('/api/create-friend', dataNewFriend);
-    if (!response.ok) {
+    const response = await $api.post('/api/create-friend', dataNewFriend);
+
+    if (response.status !== 200) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 

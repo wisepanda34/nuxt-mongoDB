@@ -7,11 +7,12 @@ export default defineEventHandler( async (event) => {
 
   try {
     const accessToken = getRequestHeader(event, 'Authorization');
+    let tokenId = null
 
     if (accessToken){
-      const isAccessTokenValidated = TokenService.validateAccessToken(accessToken);
+      const tokenId = TokenService.validateAccessToken(accessToken);
       
-      if (!isAccessTokenValidated) {
+      if (!tokenId) {
         setResponseStatus(event, 401);
         return {
           message: 'accessToken is not valid'
