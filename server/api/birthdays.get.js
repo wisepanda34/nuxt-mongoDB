@@ -6,7 +6,6 @@ import TokenService from "~/server/service/token-service.js";
 export default defineEventHandler(async (event) => {
   try {
     const accessToken = getRequestHeader(event, 'Authorization');
-    
     let tokenId = null
 
     if (accessToken) {

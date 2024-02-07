@@ -1,29 +1,38 @@
 // delete-friend.js
-import BirthdayModel from "~/server/models/Birthday.js";
+import BirthdayModel from "~/server/models/Birthday.js"
+import TokenService from "~/server/service/token-service.js";
 
 export default defineEventHandler(async(event)=> {
     try {
-        const userId = getRequestHeader(event, 'userId');
-        if(!userId){
-            return {body: {message: "no userId"}}
+        const accessToken = getRequestHeader(event, 'Authorization');
+
+        let tokenId = null
+
+        if (accessToken) {
+             tokenId = await TokenService.validateAccessToken(accessToken);
+
+            if (!tokenId) {
+                setResponseStatus(event, 401);
+                return { message: 'accessToken is not valid'};
+            }
         }
         const query = getQuery(event)
         
         await BirthdayModel.updateOne(
-            { user: userId },
+            { user: tokenId },
             { $pull: { 'friends': { _id: query.id } } }
         );
 
         return {
             status: 200,
-            body: { message: 'Друг успешно удален' },
+            body: { message: 'Friend was deleted' },
         }
     } catch (error) {
-        console.error('Ошибка при удалении друга:', error.message);
+        console.error('Server delete-friend.js error:', error.message);
 
         return {
             status: 500,
-            body: { error: 'Внутренняя ошибка сервера' },
+            body: { error: 'Server delete-friend.js error' },
         };
     }
 });

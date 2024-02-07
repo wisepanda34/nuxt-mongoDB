@@ -10,7 +10,7 @@ export default defineEventHandler( async (event) => {
     let tokenId = null
 
     if (accessToken){
-      const tokenId = TokenService.validateAccessToken(accessToken);
+      tokenId = TokenService.validateAccessToken(accessToken);
       
       if (!tokenId) {
         setResponseStatus(event, 401);

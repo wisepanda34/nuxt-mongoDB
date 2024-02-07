@@ -57,6 +57,7 @@
     "postman": "^0.2.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vue3-easy-data-table": "^1.5.47"
   }
 }

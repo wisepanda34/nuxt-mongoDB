@@ -1,37 +1,52 @@
 // update-friend.js
 import BirthdayModel from "~/server/models/Birthday.js";
+import TokenService from "~/server/service/token-service.js";
 
 export default defineEventHandler(async(event)=> {
 
   try {
+    const accessToken = getRequestHeader(event, 'Authorization');
+
+    let tokenId = null
+
+    if (accessToken) {
+         tokenId = await TokenService.validateAccessToken(accessToken);
+
+        if (!tokenId) {
+            setResponseStatus(event, 401);
+            return { message: 'accessToken is not valid'};
+        }
+    }
+
     const body = await readBody(event);
-    const { _id, name, surname, info, birthday, beforehand } = body; // Access the "id" property from the body
-    // const { day, month, year } = birthday;
-    // console.log(_id, name, surname, info, day, month, year);
-    if (!_id) {
+    const { friendId, name, surname, info, birthday, beforehand } = body; 
+
+    if (!tokenId) {
       throw new Error('No ID provided');
     }
-    await BirthdayModel.updateOne({ _id: _id }, {
+    await BirthdayModel.updateOne(
+      { user: tokenId, 'friends._id': friendId },
+      {
         $set: {
-          name: name,
-          surname: surname,
-          birthday: birthday,
-          info: info,
-          beforehand: beforehand
+          'friends.$.friend.name': name,
+          'friends.$.friend.surname': surname,
+          'friends.$.friend.birthday': birthday,
+          'friends.$.friend.info': info,
+          'friends.$.friend.beforehand': beforehand
         },
       }
     );
 
     return {
       status: 200,
-      body: { message: 'Друг успешно обновлен' },
+      body: { message: 'Friend data was updated' },
     };
   } catch (error){
-    console.error('Ошибка при обновлении друга:', error.message);
+    console.error('Internal Server Error update-friend.js:', error.status);
 
     return {
       status: 500,
-      body: { error: 'Внутренняя ошибка сервера' },
+      body: { error: 'Internal Server Error' },
     };
   }
 })

@@ -12,7 +12,6 @@ import {useMonths} from "~/store/months.js";
 import moment from 'moment';
 import SelectBeforeHand from "~/components/UI/SelectBeforeHand.vue";
 import $api from "~/http";
-import axios from "axios";
 // import { body } from "express-validator";
 import { useAuth } from "~/store/auth";
 
@@ -65,9 +64,6 @@ const updateYear = (newDate) => {
   year.value = newDate;
 };
 
-
-
-
 const onSubmitFriend = async () => {
 
   try {
@@ -106,14 +102,12 @@ const onSubmitFriend = async () => {
 const fetchDataFriends = async () => {
   try {
     const response = await $api.get(route);
-    console.log('fetchDataFriends:', response.data);
     
     friends.value = response.data;
   } catch (error) {
     console.log('fetchDataFriends error:', error);
   }
 };
-
 
 onMounted(()=>{
   fetchDataFriends()
@@ -122,49 +116,45 @@ onMounted(()=>{
 const showEditMenu = () => {
   isOpen.value = true
 }
+
 const closeEditMenu = () => {
   isOpen.value = false
 }
-
 
 const removeFriend = (id,index) => {
   toggleInfo(index)
   removeSubmitFriend(id)
 }
 
-const updateFriend = (index, id) => {
-  updateProcess.value = true
-  chosenFriend.value = friends.value.find( item => item._id === id) || null;
-  // console.log('chosenFriend.value:',chosenFriend.value)
 
-  name.value = chosenFriend.value.name
-  surname.value = chosenFriend.value.surname
-  info.value = chosenFriend.value.info
-  year.value = chosenFriend.value.birthday.year
+const updateFriend = (index, id) => {
+  
+  updateProcess.value = true
+  chosenFriend.value = friends.value.find( item => item._id === id) ;
+
+  name.value = chosenFriend.value.friend.name
+  surname.value = chosenFriend.value.friend.surname
+  info.value = chosenFriend.value.friend.info
+  year.value = chosenFriend.value.friend.birthday.year 
   date.value = {
-    day: chosenFriend.value.birthday.day,
-    indexMonth: chosenFriend.value.birthday.indexMonth
+    day: chosenFriend.value.friend.birthday.day,
+    indexMonth: chosenFriend.value.friend.birthday.indexMonth
   }
-  // console.log(date.value)
+
   closeEditMenu()
   toggleInfo(index)
   openForm()
 }
+
 const updateSubmitFriend = async () => {
+  
   try {
-    // console.log('updateSubmitFriend:',selectedDeadline.value)
-    // console.log(chosenFriend.value._id, date.value.day, date.value.indexMonth, name.value)
     if(!chosenFriend.value._id || !date.value.day || !name.value) {
       console.log("Invalid Name or data from DateInput")
       return
     }
-    const dataUpdateFriend = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: chosenFriend.value._id,
+    const dataUpdatedFriend = {
+        friendId: chosenFriend.value._id,
         name: name.value,
         surname: surname.value,
         birthday: {
@@ -174,28 +164,23 @@ const updateSubmitFriend = async () => {
         },
         info: info.value,
         beforehand: selectedDeadline.value
-      })
     }
-    // console.log('dataUpdateFriend >> ', dataUpdateFriend)
-    const response = await fetch('/api/update-friend', dataUpdateFriend);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    const response = await $api.put('/api/update-friend', dataUpdatedFriend);
+    if (response.status !== 200) {
+      throw new Error(`updateSubmitFriend error! Status: ${response.status}`);
     }
-    const data = await response.json();
-    // console.log(data);
 
     await fetchDataFriends()
 
   } catch (error) {
     console.error('Error:', error.message);
-    console.log('Error:', error.message);
   } finally {
     openFormAddFriend.value = false
     closeForm()
     updateProcess.value = false
   }
-  // console.log(year.value, date.value)
 }
+
 const removeSubmitFriend = async (id) => {
 
   if(!id) {
@@ -260,8 +245,8 @@ const removeSubmitFriend = async (id) => {
                 <img src="/images/edit.png" alt="edit">
                 <transition name="bounce">
                   <div v-show="isOpen" class="friends__editMenu">
-                    <div class="friends__editItem" @click.stop="updateFriend(index, item._id)">change</div>
-                    <div class="friends__editItem" @click.stop="removeFriend(item._id,index)">delete</div>
+                    <div class="friends__editItem" @click.prevent="updateFriend(index, item._id)">change</div>
+                    <div class="friends__editItem" @click.prevent="removeFriend(item._id, index)">delete</div>
                   </div>
                 </transition>
 
@@ -337,6 +322,7 @@ const removeSubmitFriend = async (id) => {
     margin: 10px 0;
 
     background: #fcd7d3;
+    border-radius: 5px;
     cursor: pointer;
   }
     &__item-header{

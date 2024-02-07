@@ -5,6 +5,6 @@ import { fetchData } from "~/server/api/utils/data-fetcher";
 
 export default defineEventHandler(async (event) => {
 
-  // return fetchData(bookModel, event);
-  return null
+  return fetchData(bookModel, event);
+  // return null
 });
