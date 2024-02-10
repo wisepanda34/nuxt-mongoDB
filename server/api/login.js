@@ -4,12 +4,15 @@ import bcrypt from 'bcrypt';
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
 import cookieParser from "cookie-parser";
+import { body } from "express-validator";
+
 
 export default defineEventHandler(async(event)=> {
   try{
     const { email, password } = await readBody(event);
     const findUser = await UserModel.findOne({email});
     if (!findUser) {
+      setResponseStatus(event,400)
       return {
         status: 400,
         body: { message: 'user entered incorrectly ((' },
@@ -18,6 +21,7 @@ export default defineEventHandler(async(event)=> {
     // Сравнение введенного пароля с хешем из базы данных
     const isPasswordValid = await bcrypt.compare(password, findUser.password);
     if (!isPasswordValid) {
+      setResponseStatus(event,400)
       return {
         status: 400,
         body: { message: 'Password entered incorrectly ((' },
@@ -27,9 +31,8 @@ export default defineEventHandler(async(event)=> {
     const tokens = tokenService.generateTokens({...userDto})
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-    // устанавливаем куку refreshToken в ответе
     const cookieOptions = {
-      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 дней
+      maxAge: 60 * 24 * 60 * 60 * 1000, 
       httpOnly: true,
     };
     // создает подпись для значения куки с использованием заданного секретного ключа

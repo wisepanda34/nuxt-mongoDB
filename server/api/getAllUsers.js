@@ -3,8 +3,6 @@
 import UserModel from "~/server/models/Users.js";
 import TokenService from "~/server/service/token-service.js";
 
-// import authMiddleware from "~/server/middleawares/auth-middleware.js";
-
 export default defineEventHandler(async(event) => {
   try{
     const accessToken = getRequestHeader(event, 'Authorization');

@@ -3,75 +3,66 @@
 import Input from "~/components/UI/Input.vue";
 import Password from "~/components/UI/Password.vue";
 import Button from "~/components/UI/Button.vue";
-import { useVuelidate } from '@vuelidate/core'
-import { required, minLength } from "@vuelidate/validators";
 import BaseModal from "~/components/modal/BaseModal.vue";
-import { body } from "express-validator";
-import { useAuth } from "@/store/auth";
 
 definePageMeta({
   layout: 'custom'
 })
-const email = ref('')
-const newPassword = ref('')
-const newPasswordRepeat = ref('')
-const modalText = ref('')
-const authStore = useAuth()
 
-const validationRules  = {
+const codeSending = ref(false)
+const modalText = ref('')
+
+const state = reactive({
+  email: 'duck@mail.asas',
+  password: '',
+  repeatPassword: ''
+})
+
+const rules = {
   email: { email, required },
-  newPassword: { required, minLength: minLength(4) },
-  newPasswordRepeat: { required, minLength: minLength(4) }
+  password: { required, minLength: minLength(4), maxLength: maxLength(20) },
+  repeatPassword: { required, sameAs: state.password }
 }
-// const v$ = useVuelidate()
-// onMounted(()=>{
-//   console.log('v$: ', v$)
-// })
+
+const v$ = useVuelidate(rules, state)
 
 const handleRegister = async () => {
-  if(newPassword.value !== newPasswordRepeat.value){
-    console.log("Password mismatch")
+
+  const result = await v$.value.$validate()
+  if(!result){
+    console.log('result: ', result);
     return
   }
+
+  codeSending.value = true
   try{
     const newUser = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        email: email.value,
-        password: newPassword.value
+        email: state.email,
+        password: state.password
       })
     }
-    const response = await fetch('api/registration', newUser)
+
+    const response = await fetch('/api/registration', newUser)
     const responseBody = await response.json();
-    console.log(responseBody)
 
     if(!response.ok){
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    if(responseBody && responseBody.status === 400){
-      openModal(responseBody.body.error)
-      console.log('back.status === 400')
-      return
-    }
-    // localStorage.setItem('access_token', responseBody.body.tokens.accessToken) 
-    // localStorage.setItem('refresh_token', responseBody.body.tokens.refreshToken) 
-    
  
     openModal(responseBody.body.message)
     setTimeout(()=>{
       navigateTo('/login')
     },1000)
 
-
   }catch (error) {
     //todo status
    console.error('Error:', error.message);
   }
 }
-const cancelRegister = () => {
-  navigateTo('/')
-}
+
 const openModal = (text) => {
   modalText.value = text
   setTimeout(()=>{
@@ -89,42 +80,50 @@ const updateModalText = (textNull) => {
   <form class="registration__form" @submit.prevent="handleRegister">
     <Input
       id="emailClient"
-      v-model.trim="email"
+      v-model.trim="state.email"
       textLabel="Email"
       type="text"
       placeholder="enter your email"
-      :validationRules="validationRules.email"
     />
+    <p v-for="error in v$.email.$errors" :key="error.$uid" class="text--red">
+        {{ error.$message }}
+        <br>
+    </p>
     <Password
       id="passwordClient"
-      v-model.trim="newPassword"
+      v-model.trim="state.password"
       textLabel="Password"
       placeholder="min 4 characters"
-      :validationRules="validationRules.newPassword"
-      autocomplete="new-password"
-      />
+      autocomplete="current-password"
+    />
+    <p v-for="error in v$.password.$errors" :key="error.$uid" class="text--red">
+      {{ error.$message }} 
+      <br><br>
+    </p>
     <Password
       id="passwordRepeatClient"
-      v-model.trim="newPasswordRepeat"
+      v-model.trim="state.repeatPassword"
       textLabel="Repeat password"
       placeholder="min 4 characters"
-      :validationRules="validationRules.newPasswordRepeat"
-      autocomplete="new-password"
+      autocomplete="current-password"
     />
+    <p v-for="error in v$.repeatPassword.$errors" :key="error.$uid" class="text--red">
+      {{ error.$message }} 
+      <br><br>
+    </p>
     <div class="registration__buttons">
       <Button
         text="Register"
         type="submit"
         class="registration__btn"
-        :class="{'btn__disabled' : !newPassword || !newPasswordRepeat || !email}"
-        :disabled="!newPassword || !newPasswordRepeat || !email"
+        :class="{ 'btn__disabled': codeSending }"
+        :disabled="codeSending"
       />
-
       <Button
         text="Cancel"
         type="button"
         class="registration__btn"
-        @click.prevent="cancelRegister"
+        @click.prevent="navigateTo('/')"
       />
     </div>
   </form>

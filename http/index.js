@@ -31,16 +31,16 @@ $api.interceptors.response.use(
 
       try {
         const response = await axios.get(`/api/refresh`, { withCredentials: true });
-        
         localStorage.setItem('access_token', response.data.body.accessToken);
-        
         return $api.request(originalRequest);
+
       } catch (error) {
         console.log('User is unauthorized');
         useUserExit()
         return Promise.reject(error)
       }
     } 
+    console.log('$api.interceptors.response other error',error);
     throw error
   }
 );

@@ -6,12 +6,14 @@ import MailService from "../service/mail-service.js";
 import tokenService from "../service/token-service.js";
 import createUserDto  from "../dtos/user-dto.js";
 // import cookieParser from "cookie-parser";
-// import {body} from 'express-validator'
+import {body} from 'express-validator'
 
 
 export default defineEventHandler(async (event) => {
   try{
     const { email, password } = await readBody(event);
+    console.log(email, password);
+    
     const candidate = await UserModel.findOne({ email });
     if (candidate) {
       return {

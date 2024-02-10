@@ -9,7 +9,6 @@ import 'vue3-easy-data-table/dist/style.css';
 
 const authStore = useAuth()
 const allUsers = ref(null)
-const index = 1
 const headers = [
   { text: "NUM", value: "index" },
   { text: "EMAIL", value: "email"},
@@ -28,10 +27,9 @@ const logout = async () => {
 const getAllUsers = async() => {
   try {
     const response = await $api.get('/api/getAllUsers')
-    console.log("response: ", response.data);
     allUsers.value = response.data
-    console.log(response.data);
-    
+    console.log("response: ", allUsers.value);
+
   } catch(error) {
     console.log("Admin getAllUsers error: ", error);
   }
